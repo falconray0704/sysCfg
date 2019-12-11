@@ -17,27 +17,25 @@ How to build ss-AP:
 14) install ss-redir: ./run.sh install ssredir
 15) enable ss service: ./run.sh enable ssredir
 16) reboot and check ss-redir service
+17) enable vnc
+18) install pi ap dependency: ./configure.sh install dep
 
-13) enable vnc
-14) install pi ap dependency: ./configure.sh install dep
-15) rename AP Device: ./configure.sh rename devAP
-16) reboot
-17) make AP configs: ./configure.sh cfg devAP  
-18) install AP service: ./configure.sh install devAP
-19) config AP dhcp: ./configure.sh cfg apDHCP
-20) install AP DHCP: ./configure.sh install apDHCP
-21) config AP DNS: ./configure.sh cfg apDNS
-22) install AP DNS: ./configure.sh install apDNS
-
-23) plugin usb wifi card as AP out device
-24) rename AP out device: ./configure.sh rename devOut
-25) reboot
-26) make AP out device connect to network
-27) reconfig AP's ssid and channel
-28) reconfig ss's password and ip
-29) config iptable: ./configure.sh cfg iptable
-30) install iptable: ./configure.sh install iptable
+19) plugin usb wifi card as AP out device
+20) rename AP out device: ./configure.sh rename devOut
+21) rename AP Device: ./configure.sh rename devAP
+22) reboot
+23) make AP out device connect to network
+24) make AP configs: ./configure.sh cfg devAP  
+25) install AP service: ./configure.sh install devAP
+26) config AP dhcp: ./configure.sh cfg apDHCP
+27) install AP DHCP: ./configure.sh install apDHCP
+28) config AP DNS: ./configure.sh cfg apDNS
+29) install AP DNS: ./configure.sh install apDNS
+30) reconfig ss's password and ip
 31) reboot
+32) config iptable: ./configure.sh cfg iptable
+33) install iptable: ./configure.sh install iptable
+34) reboot
 
 
 
