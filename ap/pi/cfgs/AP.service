@@ -1,0 +1,19 @@
+[Unit]
+Description=AP
+Wants=network.target
+Before=network.target
+BindsTo=sys-subsystem-net-devices-wlan0.device
+After=sys-subsystem-net-devices-wlan0.device
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/ip link set dev wlan0 up
+ExecStart=/sbin/ip addr add 192.168.11.1/24 broadcast 192.168.11.255 dev wlan0
+ExecStart=/usr/sbin/hostapd -B /etc/hostapd/hostapd.conf
+
+ExecStop=/sbin/ip addr flush dev wlan0
+ExecStop=/sbin/ip link set dev wlan0 down
+
+[Install]
+WantedBy=multi-user.target
