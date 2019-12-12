@@ -183,9 +183,9 @@ disable_AP_service_func()
 
 release_AP_IP_func()
 {
-	sudo sed -i '/interface piAPDev' /etc/dhcpcd.conf
-	sudo sed -i '/static ip_address=192\.168\.11\.1\/24' /etc/dhcpcd.conf
-	sudo sed -i '/nohook wpa_supplicant' /etc/dhcpcd.conf
+	sudo sed -i '/interface piAPDev/d' /etc/dhcpcd.conf
+	sudo sed -i '/static ip_address=192\.168\.11\.1\/24/d' /etc/dhcpcd.conf
+	sudo sed -i '/nohook wpa_supplicant/d' /etc/dhcpcd.conf
 }
 
 uninstall_AP_device_func()
