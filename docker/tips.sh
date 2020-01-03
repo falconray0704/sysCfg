@@ -240,6 +240,28 @@ tips_commit_func()
     echo 'docker commit --author "rayruan <falconray@yahoo.com>" --message "vim installed" vim ubuntu:vim'
 }
 
+tips_save_func()
+{
+    echo "Save one or more images to a tar archive (streamed to STDOUT by default)."
+    echo "docker save [ -o output.tar ] IMAGE [IMAGE...]"
+    echo ""
+    echo "eg:"
+    echo "docker save -o fedora-all.tar fedora"
+    echo "docker save ubuntu:18.04 > ubuntu.tar"
+    echo "docker save myimage:latest | gzip > myimage_latest.tar.gz"
+}
+
+tips_load_func()
+{
+    echo ""
+    echo "Load images from tar archive:"
+    echo "docker load [OPTIONS]"
+    echo ""
+    echo "eg:"
+    echo "docker load -i <backup>.tar"
+    echo "docker load < <backup>.tar.gz"
+}
+
 tips_help_func()
 {
     #echo "1) Fetch logs of the container:"
@@ -267,6 +289,8 @@ tips_help_func()
     echo '018) [logs]     Tips for "logs" command. Show container logs.'
     echo '019) [network]  Tips for "network" command. Network operations.'
     echo '020) [commit]   Tips for "commit" command. Commit container changes to image.'
+    echo '021) [save]     Tips for "save" command. Create a backup of images that can then be used with "docker load".'
+    echo '022) [load]     Tips for "load" command. Load an image from a tar archive or STDIN.'
 }
 
 [ $# -lt 1 ] && tips_help_func && exit
@@ -334,6 +358,12 @@ case $1 in
         ;;
     commit) echo '020 [commit] Tips for "commit" command'
         tips_commit_func
+        ;;
+    save) echo '021) [save]     Tips for "save" command. Create a backup of images that can then be used with "docker load".'
+        tips_save_func
+        ;;
+    load) echo '022) [load]     Tips for "load" command. Load an image from a tar archive or STDIN.'
+        tips_load_func
         ;;
     *) echo "Unknown cmd: $1"
 esac
