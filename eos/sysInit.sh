@@ -57,6 +57,8 @@ install_touchpad_gestures_func()
 
 	popd
 
+	cp ./configs/Gestures.conf ${HOME}/.config/libinput-gestures.conf 
+
 	sudo reboot
 }
 
