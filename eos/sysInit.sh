@@ -78,6 +78,21 @@ auto_hide_wingpanel_func()
 	echo ""
 }
 
+install_tweaks_func()
+{
+	sudo apt-get install software-properties-common
+	sudo add-apt-repository ppa:philip.scott/elementary-tweaks
+	sudo apt-get update
+	sudo apt-get install elementary-tweaks
+}
+
+fix_system_bugs_func()
+{
+	sudo sed -i "s/^#DefaultTimeoutStartSec=/DefaultTimeoutStartSec=/" /etc/systemd/system.conf
+	sudo sed -i "s/^#DefaultTimeoutStopSec=.*/DefaultTimeoutStopSec=20s/" /etc/systemd/system.conf
+	reboot
+}
+
 install_init_tools_func()
 {
 	sudo apt-get update
@@ -91,19 +106,11 @@ install_init_tools_func()
 	sudo apt-get install timeshift
 }
 
-install_tweaks_func()
-{
-	sudo apt-get install software-properties-common
-	sudo add-apt-repository ppa:philip.scott/elementary-tweaks
-	sudo apt-get update
-	sudo apt-get install elementary-tweaks
-}
-
 print_usage_func()
 {
     echoY "Usage: ./sysInit.sh <target>"
     echoC "Supported targets:"
-    echo "[ sysUpgrade, initTools, tweaks, cfgWingpanel, inputGroup, touchPad, pinyin ]"
+    echo "[ sysUpgrade, initTools, fixBugs, tweaks, cfgWingpanel, inputGroup, touchPad, pinyin ]"
 }
 
 [ $# -lt 1 ] && print_usage_func && exit 1
@@ -118,6 +125,9 @@ case $1 in
 	initTools) echoY "Install system initial tools..."
 		is_root_func
 		install_init_tools_func
+		;;
+	fixBugs) echoY "Fixing system bugs..."
+		fix_system_bugs_func
 		;;
 	tweaks) echoY "Install tweaks..."
 		install_tweaks_func
