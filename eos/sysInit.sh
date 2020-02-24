@@ -80,7 +80,7 @@ auto_hide_wingpanel_func()
 
 install_init_tools_func()
 {
-	sudo apt-get install git vim tree htop dnsutils
+	sudo apt-get install git vim tree htop dnsutils gtkterm
 }
 
 install_tweaks_func()
