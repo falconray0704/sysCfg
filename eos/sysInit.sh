@@ -80,7 +80,15 @@ auto_hide_wingpanel_func()
 
 install_init_tools_func()
 {
+	sudo apt-get update
+	sudo apt-get install software-properties-common
+	sudo apt-get update
+
 	sudo apt-get install git vim tree htop dnsutils gtkterm
+
+	sudo add-apt-repository -y ppa:teejee2008/timeshift
+	sudo apt-get update
+	sudo apt-get install timeshift
 }
 
 install_tweaks_func()
@@ -95,7 +103,7 @@ print_usage_func()
 {
     echoY "Usage: ./sysInit.sh <target>"
     echoC "Supported targets:"
-    echo "[ sysUpgrade, tweaks, initTools, cfgWingpanel, inputGroup, touchPad, pinyin ]"
+    echo "[ sysUpgrade, initTools, tweaks, cfgWingpanel, inputGroup, touchPad, pinyin ]"
 }
 
 [ $# -lt 1 ] && print_usage_func && exit 1
@@ -107,12 +115,12 @@ case $1 in
 		sudo apt-get update
 		sudo apt-get dist-upgrade
 		;;
-	tweaks) echoY "Install tweaks..."
-		install_tweaks_func
-		;;
 	initTools) echoY "Install system initial tools..."
 		is_root_func
 		install_init_tools_func
+		;;
+	tweaks) echoY "Install tweaks..."
+		install_tweaks_func
 		;;
 	cfgWingpanel) echoY "Configuring wingpanel for autohide..."
 		is_root_func
