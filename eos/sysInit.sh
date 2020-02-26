@@ -93,6 +93,11 @@ fix_system_bugs_func()
 	reboot
 }
 
+install_right_click_menu_func()
+{
+	sudo cp ./configs/folder-terminator.contract /usr/share/contractor/
+}
+
 install_init_tools_func()
 {
 	sudo apt-get update
@@ -110,7 +115,7 @@ print_usage_func()
 {
     echoY "Usage: ./sysInit.sh <target>"
     echoC "Supported targets:"
-    echo "[ sysUpgrade, initTools, fixBugs, tweaks, cfgWingpanel, inputGroup, touchPad, pinyin ]"
+    echo "[ sysUpgrade, initTools, rightClickMenu, fixBugs, tweaks, cfgWingpanel, touchPad, inputGroup, pinyin ]"
 }
 
 [ $# -lt 1 ] && print_usage_func && exit 1
@@ -126,6 +131,9 @@ case $1 in
 		is_root_func
 		install_init_tools_func
 		;;
+	rightClickMenu) echoY "Install right click context menu..."
+		install_right_click_menu_func
+		;;
 	fixBugs) echoY "Fixing system bugs..."
 		fix_system_bugs_func
 		;;
@@ -136,12 +144,12 @@ case $1 in
 		is_root_func
 		auto_hide_wingpanel_func
 		;;
+	touchPad) echoY "Installing touchpad gestures..."
+		install_touchpad_gestures_func
+		;;
 	inputGroup) echoY "Join into group of input."
 		sudo gpasswd -a $USER input
 		reboot
-		;;
-	touchPad) echoY "Installing touchpad gestures..."
-		install_touchpad_gestures_func
 		;;
 	pinyin) echoY "Installing pinyin input method..."
 		install_pinyin_input_method_func

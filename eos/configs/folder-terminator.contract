@@ -1,0 +1,7 @@
+[Contractor Entry]
+Name=Terminator
+Icon=gksu-root-terminal
+Description=Terminator
+MimeType=inode;application/x-sh;application/x-executable;
+Exec=terminator --working-directory %U
+Gettext-Domain=terminator
