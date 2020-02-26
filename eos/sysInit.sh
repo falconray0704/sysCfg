@@ -104,7 +104,7 @@ install_init_tools_func()
 	sudo apt-get install software-properties-common
 	sudo apt-get update
 
-	sudo apt-get install git vim tree htop dnsutils gtkterm
+	sudo apt-get install git vim tree htop dnsutils gtkterm gnome-disk-utility
 
 	sudo add-apt-repository -y ppa:teejee2008/timeshift
 	sudo apt-get update
