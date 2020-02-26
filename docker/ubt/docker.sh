@@ -8,7 +8,7 @@ set -o errexit
 . ../../libShell/echo_color.lib
 . ../../libShell/sysEnv.lib
 
-DOCKER_COMPOSE_VERSION=1.25.0
+DOCKER_COMPOSE_VERSION=1.25.4
 
 install_DockerCompose_func()
 {
@@ -69,6 +69,10 @@ install_repo_func()
     if [ $(os_distributor) == "LinuxMint" ] && [ $(os_distribution_number) == "19.3" ]
     then
         echoG "Linux Mint..."
+        echo -e "\ndeb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" | sudo tee -a /etc/apt/sources.list
+    elif [ $(os_distributor) == "elementary" ] && [ $(os_distribution_number) == "5.1.2" ]
+    then
+        echoG "Elementary OS $(os_distributor_name)..."
         echo -e "\ndeb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" | sudo tee -a /etc/apt/sources.list
     else
         sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
