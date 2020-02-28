@@ -98,6 +98,13 @@ install_right_click_menu_func()
 	sudo cp ./configs/folder-terminator.contract /usr/share/contractor/
 }
 
+cfg_swap_func()
+{
+    # refer to: https://help.ubuntu.com/community/SwapFaq#What_is_swappiness_and_how_do_I_change_it.3F
+    echo "vm.swappiness=0" >> /etc/sysctl.conf
+    cp ./configs/swap2ram.sh /usr/local/sbin/
+}
+
 install_init_tools_func()
 {
 	sudo apt-get update
@@ -115,7 +122,7 @@ print_usage_func()
 {
     echoY "Usage: ./sysInit.sh <target>"
     echoC "Supported targets:"
-    echo "[ sysUpgrade, initTools, rightClickMenu, fixBugs, tweaks, cfgWingpanel, touchPad, inputGroup, pinyin ]"
+    echo "[ sysUpgrade, initTools, cfgSwap, rightClickMenu, fixBugs, tweaks, cfgWingpanel, touchPad, inputGroup, pinyin ]"
 }
 
 [ $# -lt 1 ] && print_usage_func && exit 1
@@ -131,6 +138,10 @@ case $1 in
 		is_root_func
 		install_init_tools_func
 		;;
+    cfgSwap) echoY "Configuring swap ..."
+		is_root_func
+        cfg_swap_func
+        ;;
 	rightClickMenu) echoY "Install right click context menu..."
 		install_right_click_menu_func
 		;;
