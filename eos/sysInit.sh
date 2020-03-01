@@ -113,6 +113,10 @@ install_init_tools_func()
 
 	sudo apt-get install git vim tree htop dnsutils gtkterm gnome-disk-utility
 
+    # install cpupower tools
+    sudo apt-get install -y linux-tools-$(uname -r)
+
+    # install time shift
 	sudo add-apt-repository -y ppa:teejee2008/timeshift
 	sudo apt-get update
 	sudo apt-get install timeshift
