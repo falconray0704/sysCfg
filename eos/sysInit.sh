@@ -114,6 +114,10 @@ install_init_tools_func()
 	sudo apt-get install git vim tree htop dnsutils gtkterm gnome-disk-utility
 
     # install cpupower tools
+    # refer to:
+    # https://wiki.archlinux.org/index.php/CPU_frequency_scaling#cpupower-gui
+    # https://unix.stackexchange.com/questions/341927/how-to-install-cpupower-on-ubuntu-14-04-kernel-4-6-0
+    # https://github.com/vagnum08/cpupower-gui
     sudo apt-get install -y linux-tools-$(uname -r)
 
     # install time shift
