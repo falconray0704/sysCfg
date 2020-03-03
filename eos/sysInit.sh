@@ -105,6 +105,20 @@ cfg_swap_func()
     cp ./configs/swap2ram.sh /usr/local/sbin/
 }
 
+install_cpu_cfg_tools_func()
+{
+    # install cpupower tools
+    # refer to:
+    # https://wiki.archlinux.org/index.php/CPU_frequency_scaling#cpupower-gui
+    # https://unix.stackexchange.com/questions/341927/how-to-install-cpupower-on-ubuntu-14-04-kernel-4-6-0
+    # https://github.com/vagnum08/cpupower-gui
+    sudo apt-get install -y linux-tools-$(uname -r)
+    sudo add-apt-repository ppa:erigas/cpupower-gui
+    sudo apt-get update
+    sudo apt-get install cpupower-gui
+
+}
+
 install_init_tools_func()
 {
 	sudo apt-get update
@@ -112,13 +126,6 @@ install_init_tools_func()
 	sudo apt-get update
 
 	sudo apt-get install git vim tree htop dnsutils gtkterm gnome-disk-utility
-
-    # install cpupower tools
-    # refer to:
-    # https://wiki.archlinux.org/index.php/CPU_frequency_scaling#cpupower-gui
-    # https://unix.stackexchange.com/questions/341927/how-to-install-cpupower-on-ubuntu-14-04-kernel-4-6-0
-    # https://github.com/vagnum08/cpupower-gui
-    sudo apt-get install -y linux-tools-$(uname -r)
 
     # install time shift
 	sudo add-apt-repository -y ppa:teejee2008/timeshift
@@ -130,7 +137,7 @@ print_usage_func()
 {
     echoY "Usage: ./sysInit.sh <target>"
     echoC "Supported targets:"
-    echo "[ sysUpgrade, initTools, cfgSwap, rightClickMenu, fixBugs, tweaks, cfgWingpanel, touchPad, inputGroup, pinyin ]"
+    echo "[ sysUpgrade, initTools, cpupower, cfgSwap, rightClickMenu, fixBugs, tweaks, cfgWingpanel, touchPad, inputGroup, pinyin ]"
 }
 
 [ $# -lt 1 ] && print_usage_func && exit 1
@@ -146,6 +153,9 @@ case $1 in
 		is_root_func
 		install_init_tools_func
 		;;
+    cpupower) echoY "Install cpupower and cpupower-gui..."
+        install_cpu_cfg_tools_func
+        ;;
     cfgSwap) echoY "Configuring swap ..."
 		is_root_func
         cfg_swap_func
