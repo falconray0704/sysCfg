@@ -62,20 +62,25 @@ install_touchpad_gestures_func()
 	sudo reboot
 }
 
-auto_hide_wingpanel_func()
+hide_wingpanel_func()
 {
-	echo "Refer to: http://entornosgnulinux.com/2018/01/01/autohide-en-wingpanel-para-elementary-os-loki/ "
-	sudo apt-get install software-properties-common
-	sudo add-apt-repository ppa:yunnxx/elementary
-	sudo apt update
-	sudo apt install elementary-wingautohide
-	echoY "Add elementary-wingautohide to system startup:"
-	echo "Applications-->All Settings-->Startup"
-	echo 'Add new item with command "sh /usr/bin/wingautohide.sh"'
-	echo ""
-	echoY "Remove elementary-wingautohide:"
-	echo "sudo apt purge elementary-wingautohide"
-	echo ""
+#	echo "Refer to: http://entornosgnulinux.com/2018/01/01/autohide-en-wingpanel-para-elementary-os-loki/ "
+#	sudo apt-get install software-properties-common
+#	sudo add-apt-repository ppa:yunnxx/elementary
+#	sudo apt update
+#	sudo apt install elementary-wingautohide
+#	echoY "Add elementary-wingautohide to system startup:"
+#	echo "Applications-->All Settings-->Startup"
+#	echo 'Add new item with command "sh /usr/bin/wingautohide.sh"'
+#	echo ""
+#	echoY "Remove elementary-wingautohide:"
+#	echo "sudo apt purge elementary-wingautohide"
+#	echo ""
+
+    sudo cp ./configs/hide_top_panel /usr/bin/hide_top_panel
+    sudo chmod +x /usr/bin/hide_top_panel
+    echoY "Add keyborad shortcut for command hide_top_panel."
+
 }
 
 install_tweaks_func()
@@ -170,8 +175,7 @@ case $1 in
 		install_tweaks_func
 		;;
 	cfgWingpanel) echoY "Configuring wingpanel for autohide..."
-		is_root_func
-		auto_hide_wingpanel_func
+		hide_wingpanel_func
 		;;
 	touchPad) echoY "Installing touchpad gestures..."
 		install_touchpad_gestures_func
