@@ -249,6 +249,10 @@ tips_save_func()
     echo "docker save -o fedora-all.tar fedora"
     echo "docker save ubuntu:18.04 > ubuntu.tar"
     echo "docker save myimage:latest | gzip > myimage_latest.tar.gz"
+    echo ""
+    echo "Backup all images:"
+    echo "docker save -o allinone.tar \$(docker images --format '{{.Repository}}:{{.Tag}}')"
+    echo ""
 }
 
 tips_load_func()
