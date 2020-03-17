@@ -3,8 +3,8 @@
 set -o nounset
 set -o errexit
 
-. ../libShell/echo_color.lib
-. ../libShell/sysEnv.lib
+. ../../libShell/echo_color.lib
+. ../../libShell/sysEnv.lib
 
 install_pinyin_input_method_func()
 {
