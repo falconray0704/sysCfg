@@ -93,8 +93,10 @@ install_tweaks_func()
 
 fix_system_bugs_func()
 {
-	sudo sed -i "s/^#DefaultTimeoutStartSec=/DefaultTimeoutStartSec=/" /etc/systemd/system.conf
-	sudo sed -i "s/^#DefaultTimeoutStopSec=.*/DefaultTimeoutStopSec=20s/" /etc/systemd/system.conf
+#	sudo sed -i "s/^#DefaultTimeoutStartSec=/DefaultTimeoutStartSec=/" /etc/systemd/system.conf
+#	sudo sed -i "s/^#DefaultTimeoutStopSec=.*/DefaultTimeoutStopSec=20s/" /etc/systemd/system.conf
+    sudo echo "options snd-hda-intel dmic_detect=0" >> /etc/modprobe.d/alsa-base.conf
+
 	reboot
 }
 
