@@ -12,7 +12,7 @@ set -o errexit
 . ../libShell/echo_color.lib
 . ../libShell/sysEnv.lib
 
-BoostVersion="1.59.0"
+BoostVersion="1.72.0"
 #BoostVersion="1.69.0"
 
 tips_func()
@@ -155,6 +155,13 @@ build_boost_1_69_0_without_install_func()
     build_boost_version_without_install_func ${Version} ${VersionFile}
 }
 
+build_boost_1_72_0_without_install_func()
+{
+    local Version="1.72.0"
+    local VersionFile="1_72_0"
+    build_boost_version_without_install_func ${Version} ${VersionFile}
+}
+
 build_boost_without_install_func()
 {
     if [ ${BoostVersion} == "1.59.0" ]
@@ -165,6 +172,10 @@ build_boost_without_install_func()
     then
         echo "Building boost ${BoostVersion}"
         build_boost_1_69_0_without_install_func
+    elif [ ${BoostVersion} == "1.72.0" ]
+    then
+        echo "Building boost ${BoostVersion}"
+        build_boost_1_72_0_without_install_func
     else
         echo "Unknow boost version: ${BoostVersion}"
     fi
@@ -205,6 +216,14 @@ install_boost_src_1_69_0_func()
     install_boost_version_func ${Version} ${VersionFile}
 }
 
+install_boost_src_1_72_0_func()
+{
+    local Version="1.72.0"
+    local VersionFile="1_72_0"
+
+    install_boost_version_func ${Version} ${VersionFile}
+}
+
 install_boost_src_func()
 {
     if [ ${BoostVersion} == "1.59.0" ]
@@ -215,6 +234,10 @@ install_boost_src_func()
     then
         echo "Installing boost ${BoostVersion}"
         install_boost_src_1_69_0_func
+    elif [ ${BoostVersion} == "1.72.0" ]
+    then
+        echo "Installing boost ${BoostVersion}"
+        install_boost_src_1_72_0_func
     else
         echo "Unknow boost version: ${BoostVersion}"
     fi
@@ -234,6 +257,14 @@ fetch_boost_src_1_69_0_func()
     fetch_boost_src_func ${Version} ${VersionFile}
 }
 
+fetch_boost_src_1_72_0_func()
+{
+    local Version="1.72.0"
+    local VersionFile="1_72_0"
+    fetch_boost_src_func ${Version} ${VersionFile}
+}
+
+
 fetch_boost_func()
 {
     if [ ${BoostVersion} == "1.59.0" ]
@@ -244,6 +275,10 @@ fetch_boost_func()
     then
         echo  "Fetching ${BoostVersion}"
         fetch_boost_src_1_69_0_func
+    elif [ ${BoostVersion} == "1.72.0" ]
+    then
+        echo  "Fetching ${BoostVersion}"
+        fetch_boost_src_1_72_0_func
     else
         echo  "Unknow ${BoostVersion}"
     fi
@@ -347,7 +382,7 @@ case $1 in
     all) echoY "Deploy all general packets ..."
         deploy_general_repo_pkgs
         install_Latest_grpc
-		deploy_boost_1_59_0_without_install_func
+		deploy_boost_1_72_0_without_install_func
         ;;
     tips)
         tips_func
