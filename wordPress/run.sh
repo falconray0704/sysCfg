@@ -161,7 +161,10 @@ case $1 in
             exit 1
         else
             echoG "WordPress is going to be installed in ${INSTALL_PATH}..."
-            mkdir -p ${INSTALL_PATH}
+
+            sudo mkdir -p ${INSTALL_ROOT_PATH}
+            sudo chown $(id -un):$(id -gn) ${INSTALL_ROOT_PATH}
+
             cp -a ./cfgs ${INSTALL_PATH}
             cp ./run.sh ${INSTALL_PATH}/
             echoG "WordPress has been installed in ${INSTALL_PATH}."
@@ -174,6 +177,13 @@ case $1 in
             exit 1
         else
             echoG "Configuring WordPress for $2"
+
+            sudo mkdir -p ${DATAS_ROOT_PATH}
+            sudo mkdir -p ${CERTBOT_ETC_DATA_PATH}
+            sudo mkdir -p ${WORDPRESS_DATA_PATH}
+            sudo mkdir -p ${DBDATA_DATA_PATH}
+            sudo chown -hR $(id -un):$(id -gn) ${DATAS_ROOT_PATH}
+
             configure_wordpress_func $2
         fi
 	;;
