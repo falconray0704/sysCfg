@@ -15,10 +15,10 @@ INSTALL_DIR="wordpress"
 INSTALL_PATH="${INSTALL_ROOT_PATH}/${INSTALL_DIR}"
 
 EMAIL_ADDR="falconray@yahoo.com"
-DOMAINNAME="doryhub.com"
-DOMAINNAME_WWW="www.doryhub.com"
+DOMAINNAME="blog.doryhub.com"
+DOMAINNAME_WWW="blog.doryhub.com"
 
-DATAS_ROOT_PATH="${INSTALL_DIR}/datas"
+DATAS_ROOT_PATH="${INSTALL_PATH}/datas"
 CERTBOT_ETC_DATA_PATH="${DATAS_ROOT_PATH}/certbot-etc"
 WORDPRESS_DATA_PATH="${DATAS_ROOT_PATH}/wordpress"
 DBDATA_DATA_PATH="${DATAS_ROOT_PATH}/dbdata"
@@ -58,43 +58,73 @@ get_ss_redir_config_args()
 	fi
 }
 
-configure_wordpress_func()
+sed_path()
 {
-    pushd ${INSTALL_PATH}
+	echo $(echo $1 | sed -e 's/\//\\\//g')
+}
 
-    if [ $1 == "http" ]
-    then
-        cp ./nginx-conf/nginx.conf_http ./nginx-conf/nginx.conf
-        cp ./docker-compose.yml_http ./docker-compose.yml
-
-
-    elif [ $1 == "https" ]
-    then
-        cp ./nginx-conf/nginx.conf_https ./nginx-conf/nginx.conf
-        cp ./docker-compose.yml_http ./docker-compose.yml
-
-    else
-        echoR "Unsupported target: $1"
-        exit 1
-    fi
-
+customize_nginx_func()
+{
     sed -i "s/domain_name/${DOMAINNAME}/" ./nginx-conf/nginx.conf
     sed -i "s/domain_name_www/${DOMAINNAME_WWW}/" ./nginx-conf/nginx.conf
+}
 
+customize_docker_compose_func()
+{
     sed -i "s/domain_name/${DOMAINNAME}/" ./docker-compose.yml
     sed -i "s/domain_name_www/${DOMAINNAME_WWW}/" ./docker-compose.yml
 
     sed -i "s/email_addr/${EMAIL_ADDR}/" ./docker-compose.yml
     
-    sed -i "s/path_certbot-etc/${CERTBOT_ETC_DATA_PATH}/" ./docker-compose.yml
-    sed -i "s/path_wordpress/${WORDPRESS_DATA_PATH}/" ./docker-compose.yml
-    sed -i "s/path_dbdata/${DBDATA_DATA_PATH}/" ./docker-compose.yml
+    #echo "$(sed_path ${CERTBOT_ETC_DATA_PATH})"
+    sed -i "s/path_certbot-etc/$(sed_path ${CERTBOT_ETC_DATA_PATH})/" ./docker-compose.yml
+    sed -i "s/path_wordpress/$(sed_path ${WORDPRESS_DATA_PATH})/" ./docker-compose.yml
+    sed -i "s/path_dbdata/$(sed_path ${DBDATA_DATA_PATH})/" ./docker-compose.yml
+
+}
+
+configs_initialize_func()
+{
+    pushd ${INSTALL_PATH}
+
+    cp ./nginx-conf/nginx.conf_http ./nginx-conf/nginx.conf
+    customize_nginx_func
+
+    cp ./docker-compose.yml_http ./docker-compose.yml
+    customize_docker_compose_func
+
+    popd
+}
+
+obtain_ssl_cert_func()
+{
+    pushd ${INSTALL_PATH}
+    docker-compose up -d
+    sleep 5
+    docker-compose exec webserver ls -la /etc/letsencrypt/live
+
+    sed -i "s/staging/force-renewal/" ./docker-compose.yml
+    docker-compose up --force-recreate --no-deps certbot
+    popd
+}
+
+enable_ssl_func()
+{
+    pushd ${INSTALL_PATH}
+    docker-compose stop webserver
 
     curl -sSLo nginx-conf/options-ssl-nginx.conf https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
 
-    echoG "Configuration have been done."
+    cp ./nginx-conf/nginx.conf_https ./nginx-conf/nginx.conf
+    customize_nginx_func
 
-    echoY "Please config your user name and password for database in ${INSTALL_PATH}/.env before starting!"
+    #cp ./docker-compose.yml_http ./docker-compose.yml
+    #customize_configs_func
+    sed -i '/"80:80"/a\      - \"443:443\"' ./docker-compose.yml
+
+    docker-compose up -d --force-recreate --no-deps webserver
+    docker-compose ps
+
     echo ""
 
     popd
@@ -102,34 +132,22 @@ configure_wordpress_func()
 
 start_server_func()
 {
-    if [ ! -d ${INSTALL_DIR} ]
+    if [ ! -d ${INSTALL_PATH} ]
     then
         echoR "WordPress have been installed in ${INSTALL_PATH}!"
         exit 1
     fi
 
     pushd ${INSTALL_PATH}
-
-    if [ $1 == "http" ]
-    then
-        docker-compose up -d
-        docker ps -a
-        docker exec webserver ls -la /etc/letsencrypt/live
-    elif [ $1 == "https" ]
-    then
-        docker-compose up -d
-        docker ps -a
-    else
-        echoR "Unsupported target: $1"
-        exit 1
-    fi
+    docker-compose up -d
+    docker ps -a
 
     popd
 }
 
 stop_server_func()
 {
-    if [ ! -d ${INSTALL_DIR} ]
+    if [ ! -d ${INSTALL_PATH} ]
     then
         echoR "WordPress have been installed in ${INSTALL_PATH}!"
         exit 1
@@ -147,9 +165,13 @@ usage_func()
     echoY "Supported cmd:"
     echo "[ install, cfg, start, stop ]"
     echoY "Supported targets:"
-    echo "[ http, https ]"
+    echo "[ server ]"
 
 }
+
+#cp ./cfgs/docker-compose.yml_http ./docker-compose.yml
+#sed -i '/"80:80"/a\      - \"443:443\"' ./docker-compose.yml
+#exit 0
 
 [ $# -lt 1 ] && echoR "Invalid args count:$# " && usage_func && exit 1
 
@@ -168,6 +190,8 @@ case $1 in
             cp -a ./cfgs ${INSTALL_PATH}
             cp ./run.sh ${INSTALL_PATH}/
             echoG "WordPress has been installed in ${INSTALL_PATH}."
+	    echoY "Please config your user name and password for database in ${INSTALL_PATH}/.env before server configuration!"
+	    echo ""
         fi
 	;;
 	cfg)
@@ -176,7 +200,8 @@ case $1 in
             echoR "Could not find WordPress installation in ${INSTALL_ROOT_PATH}!"
             exit 1
         else
-            echoG "Configuring WordPress for $2"
+	    # server configs initialize
+            echoG "Initializing WordPress..."
 
             sudo mkdir -p ${DATAS_ROOT_PATH}
             sudo mkdir -p ${CERTBOT_ETC_DATA_PATH}
@@ -184,11 +209,21 @@ case $1 in
             sudo mkdir -p ${DBDATA_DATA_PATH}
             sudo chown -hR $(id -un):$(id -gn) ${DATAS_ROOT_PATH}
 
-            configure_wordpress_func $2
+            configs_initialize_func
+
+	    # Obtaining SSL Certificates and Credentials
+	    echoG "Obtaining SSL Certificates and Credentials..."
+	    obtain_ssl_cert_func
+
+	    # enable ssl 
+	    echoG "Enabling ssl.."
+	    enable_ssl_func
+	    echoG "Deploying is finished!"
+
         fi
 	;;
 	start)
-        start_server_func $2
+        start_server_func
 	;;
 	stop)
         stop_server_func
