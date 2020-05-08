@@ -23,41 +23,6 @@ CERTBOT_ETC_DATA_PATH="${DATAS_ROOT_PATH}/certbot-etc"
 WORDPRESS_DATA_PATH="${DATAS_ROOT_PATH}/wordpress"
 DBDATA_DATA_PATH="${DATAS_ROOT_PATH}/dbdata"
 
-isCorrect="N"
-
-ssServerIP="0.0.0.0"
-ssServerPort=443
-ssServerPassword="ss-redir"
-ssRedirLocalPort=1080
-
-get_ss_redir_config_args()
-{
-	echoY "Please input your ss server IP:"
-	read ssServerIP
-	echoY "Please input your ss server port:"
-	read ssServerPort
-	#echo "Please input your ss server password:"
-	#read ssServerPassword
-	echoY "Please input your ss-redir local port:"
-	read ssRedirLocalPort
-
-	echoY "Your server IP is: ${ssServerIP}"
-	echoY "Your server Port is: ${ssServerPort}"
-	#echo "Your server password is: ${ssServerPassword}"
-	echoY "Your ss-redir local port is: ${ssRedirLocalPort}"
-
-    isCorrect="N"
-	echoY "Is it correct? [y/N]"
-	read isCorrect
-
-	if [ ${isCorrect}x = "Y"x ] || [ ${isCorrect}x = "y"x ]; then
-		echoG "correct"
-	else
-		echoR "incorrect"
-		exit 1
-	fi
-}
-
 sed_path()
 {
 	echo $(echo $1 | sed -e 's/\//\\\//g')
@@ -80,7 +45,6 @@ customize_docker_compose_func()
     sed -i "s/path_certbot-etc/$(sed_path ${CERTBOT_ETC_DATA_PATH})/" ./docker-compose.yml
     sed -i "s/path_wordpress/$(sed_path ${WORDPRESS_DATA_PATH})/" ./docker-compose.yml
     sed -i "s/path_dbdata/$(sed_path ${DBDATA_DATA_PATH})/" ./docker-compose.yml
-
 }
 
 configs_initialize_func()
@@ -118,8 +82,6 @@ enable_ssl_func()
     cp ./nginx-conf/nginx.conf_https ./nginx-conf/nginx.conf
     customize_nginx_func
 
-    #cp ./docker-compose.yml_http ./docker-compose.yml
-    #customize_configs_func
     sed -i '/"80:80"/a\      - \"443:443\"' ./docker-compose.yml
 
     docker-compose up -d --force-recreate --no-deps webserver
@@ -166,7 +128,6 @@ usage_func()
     echo "[ install, cfg, start, stop ]"
     echoY "Supported targets:"
     echo "[ server ]"
-
 }
 
 #cp ./cfgs/docker-compose.yml_http ./docker-compose.yml
@@ -188,9 +149,8 @@ case $1 in
             sudo chown $(id -un):$(id -gn) ${INSTALL_ROOT_PATH}
 
             cp -a ./cfgs ${INSTALL_PATH}
-            cp ./run.sh ${INSTALL_PATH}/
             echoG "WordPress has been installed in ${INSTALL_PATH}."
-	    echoY "Please config your user name and password for database in ${INSTALL_PATH}/.env before server configuration!"
+            echoY "Please config your user name and password for database in ${INSTALL_PATH}/.env before server configuration!"
 	    echo ""
         fi
 	;;
@@ -200,7 +160,7 @@ case $1 in
             echoR "Could not find WordPress installation in ${INSTALL_ROOT_PATH}!"
             exit 1
         else
-	    # server configs initialize
+            # server configs initialize
             echoG "Initializing WordPress..."
 
             sudo mkdir -p ${DATAS_ROOT_PATH}
@@ -211,15 +171,14 @@ case $1 in
 
             configs_initialize_func
 
-	    # Obtaining SSL Certificates and Credentials
-	    echoG "Obtaining SSL Certificates and Credentials..."
-	    obtain_ssl_cert_func
+            # Obtaining SSL Certificates and Credentials
+            echoG "Obtaining SSL Certificates and Credentials..."
+            obtain_ssl_cert_func
 
-	    # enable ssl 
-	    echoG "Enabling ssl.."
-	    enable_ssl_func
-	    echoG "Deploying is finished!"
-
+            # enable ssl 
+            echoG "Enabling ssl.."
+            enable_ssl_func
+            echoG "Deploying is finished!"
         fi
 	;;
 	start)
