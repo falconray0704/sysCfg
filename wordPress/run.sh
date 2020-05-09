@@ -20,7 +20,7 @@ DOMAINNAME_WWW="blog.doryhub.com"
 
 DATAS_ROOT_PATH="${INSTALL_PATH}/datas"
 CERTBOT_ETC_DATA_PATH="${DATAS_ROOT_PATH}/certbot-etc"
-WORDPRESS_DATA_PATH="${DATAS_ROOT_PATH}/wordpress"
+WORDPRESS_DATA_PATH="${DATAS_ROOT_PATH}/wordpress/wp-content"
 DBDATA_DATA_PATH="${DATAS_ROOT_PATH}/dbdata"
 
 sed_path()

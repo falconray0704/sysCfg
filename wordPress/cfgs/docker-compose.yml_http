@@ -27,7 +27,7 @@ services:
       - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
       - WORDPRESS_DB_NAME=wordpress
     volumes:
-      - path_wordpress:/var/www/html
+      - path_wordpress:/var/www/html/wp-content
     networks:
       - app-network
 
