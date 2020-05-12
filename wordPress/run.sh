@@ -10,18 +10,20 @@ set -o errexit
 . ../libShell/echo_color.lib
 . ../libShell/sysEnv.lib
 
-INSTALL_ROOT_PATH="/opt/servers"
-INSTALL_DIR="wordpress"
-INSTALL_PATH="${INSTALL_ROOT_PATH}/${INSTALL_DIR}"
+source ./cfgs/.env
 
-EMAIL_ADDR="falconray@yahoo.com"
-DOMAINNAME="blog.doryhub.com"
-DOMAINNAME_WWW="blog.doryhub.com"
+#INSTALL_ROOT_PATH="/opt/servers"
+#INSTALL_DIR="wordpress"
+#INSTALL_PATH="${INSTALL_ROOT_PATH}/${INSTALL_DIR}"
 
-DATAS_ROOT_PATH="${INSTALL_PATH}/datas"
-CERTBOT_ETC_DATA_PATH="${DATAS_ROOT_PATH}/certbot-etc"
-WORDPRESS_DATA_PATH="${DATAS_ROOT_PATH}/wordpress/wp-content"
-DBDATA_DATA_PATH="${DATAS_ROOT_PATH}/dbdata"
+#EMAIL_ADDR="falconray@yahoo.com"
+#DOMAINNAME="blog.doryhub.com"
+#DOMAINNAME_WWW="blog.doryhub.com"
+
+#DATAS_ROOT_PATH="${INSTALL_PATH}/datas"
+#CERTBOT_ETC_DATA_PATH="${DATAS_ROOT_PATH}/certbot-etc"
+#WORDPRESS_DATA_PATH="${DATAS_ROOT_PATH}/wordpress/wp-content"
+#DBDATA_DATA_PATH="${DATAS_ROOT_PATH}/dbdata"
 
 sed_path()
 {
@@ -54,8 +56,8 @@ configs_initialize_func()
     cp ./nginx-conf/nginx.conf_http ./nginx-conf/nginx.conf
     customize_nginx_func
 
-    cp ./docker-compose.yml_http ./docker-compose.yml
-    customize_docker_compose_func
+    cp ./docker-compose.yml_org ./docker-compose.yml
+#    customize_docker_compose_func
 
     popd
 }
@@ -117,6 +119,8 @@ stop_server_func()
 
     pushd ${INSTALL_PATH}
     docker-compose down
+    docker volume rm wordpress_certbot-etc wordpress_dbdata wordpress_wordpress wordpress_wordpress-content
+    docker volume ls
     popd
 }
 
@@ -166,8 +170,9 @@ case $1 in
             sudo mkdir -p ${DATAS_ROOT_PATH}
             sudo mkdir -p ${CERTBOT_ETC_DATA_PATH}
             sudo mkdir -p ${WORDPRESS_DATA_PATH}
+            sudo mkdir -p ${WORDPRESS_CONTENT_DATA_PATH}
             sudo mkdir -p ${DBDATA_DATA_PATH}
-            sudo chown -hR $(id -un):$(id -gn) ${DATAS_ROOT_PATH}
+            #sudo chown -hR root:docker ${DATAS_ROOT_PATH}
 
             configs_initialize_func
 
@@ -178,6 +183,11 @@ case $1 in
             # enable ssl 
             echoG "Enabling ssl.."
             enable_ssl_func
+
+	    # enable update
+	    docker exec -it wordpress /bin/chown www-data:www-data /var/www/html/wp-content
+	    docker exec -it wordpress /bin/ls -al /var/www/html/wp-content
+
             echoG "Deploying is finished!"
         fi
 	;;
