@@ -8,7 +8,7 @@ set -o errexit
 . ../../libShell/echo_color.lib
 . ../../libShell/sysEnv.lib
 
-DOCKER_COMPOSE_VERSION=1.25.4
+DOCKER_COMPOSE_VERSION=1.26.0
 
 distribution_eos_func()
 {
