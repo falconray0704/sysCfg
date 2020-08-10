@@ -7,11 +7,13 @@ set -o errexit
 # trace each command execute with attachment infomations, same as `bash -x myscripts.sh`
 #set -o xtrace
 
+# refer to https://www.raspberrypi.org/documentation/linux/kernel/building.md#default_configuration
+
 . ../libShell/echo_color.lib
 
 KERNEL=kernel7
 
-piRoot=/mnt/ld0/github/raspberrypi
+piRoot=/mnt/n03/raspberrypi
 kernelVersion=4.19
 #kernelVersion=4.20
 #kernelVersion=5.3
@@ -44,7 +46,7 @@ build_kernel_func()
     pushd ${kernelPath}/linux
     make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcm2709_defconfig
     make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
-    make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage modules dtbs -j 12
+    make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage modules dtbs -j 18
 
     popd
 }
