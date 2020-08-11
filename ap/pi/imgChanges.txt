@@ -1,0 +1,71 @@
+
+How to make a AP pi:
+1) restore from apSetup-202008101839.img
+2) plugin usb wifi card as AP out device
+3) rename AP out device: ./configure.sh rename devOut
+4) rename AP Device: ./configure.sh rename devAP
+5) reboot
+6) make AP out device connect to network
+7) make AP configs: ./configure.sh cfg devAP  
+8) install AP service: ./configure.sh install devAP
+9) config AP dhcp: ./configure.sh cfg apDHCP
+10) install AP DHCP: ./configure.sh install apDHCP
+11) config AP DNS: ./configure.sh cfg apDNS
+12) install AP DNS: ./configure.sh install apDNS
+13) reconfig ss password and ip
+14) reboot
+15) config iptable: ./configure.sh cfg iptable
+16) install iptable: ./configure.sh install iptable
+17) reboot
+
+apSetup-202008101839.img:
+1) restore from apBase-202008101616.img
+2) install dnscrypt-proxy and ss-redir with relPkgs from host to pi /home, but do not install services
+3) get repo dkhub and sysCfg
+4) move deployPkgs from /home to ${HOME}, and decompress all the newest packages.
+5) disable system dns service:
+    cd sysCfg/dnscrypt-proxy/pi
+    ./run.sh uninstall sysDNS
+6) sync && reboot
+7) config and install dnscrypt-proxy service:
+    cd sysCfg/dnscrypt-proxy/pi
+    ./run.sh mk cfgs
+    ./run.sh install service
+8) reboot and check dnscrypt-proxy:
+    sync && reboot
+    cd sysCfg/dnscrypt-proxy/pi
+    dig www.google.com
+9) make ss configs: cd sysCfg/ss && ./run.sh mk cfgs
+10) install ss-redir: ./run.sh install ssredir
+11) enable ss service: ./run.sh enable ssredir
+12) reboot and check ss-redir service
+13) enable vnc
+14) install pi ap dependency: cd sysCfg/ap/pi && ./configure.sh install dep
+ 
+
+apBase-202008101616.img
+1) restore from base-201912081250.img
+2) system dist-upgrade
+3) upgrade kernel 4.19.127
+
+dev-202008101220.img:
+1) restore from dev-201912081753.img
+2) system dist-upgrade
+3) upgrade kernel 4.19.127
+4) upgrade ss to 3.3.4
+4) upgrade dnscrypt-proxy to 2.0.44
+
+dev-201912081753.img:
+1) restore from base-201912081250.img
+2) install docker and docker-compose
+3) pulled builder for dnscrypt-proxy and ss
+4) build dnscrypt-proxy and ss 
+
+base-201912081250.img:
+1) install official image 2019-04-08-raspbian-stretch.img
+2) change hostname and disable unusing interface with rasp-config tool
+3) apt-get update && apt-get upgrade
+4) apt-get install vim git dnsutils
+5) upgrade kernel with bbr enable
+
+
