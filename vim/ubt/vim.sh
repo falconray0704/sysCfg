@@ -55,5 +55,6 @@ curl 'https://vim-bootstrap.com/generate.vim' --data 'langs=c&langs=erlang&langs
 echoY "exec following command manually:"
 echo "vim +PlugInstall +qall"
 echo "cd ~/.vim/plugged/YouCompleteMe/"
+echo "git submodule update --init --recursive"
 echo "python3 install.py --clang-completer --go-completer"
 
