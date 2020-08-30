@@ -10,7 +10,7 @@ set -o errexit
 . ../../libShell/echo_color.lib
 . ../../libShell/sysEnv.lib
 
-GOVERSION="1.14"
+GOVERSION="1.15"
 
 install_dependence_func()
 {
