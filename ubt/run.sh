@@ -12,7 +12,7 @@ set -e
 DOWNLOAD_DIR="downloads"
 
 SUPPORTED_CMD="install"
-SUPPORTED_TARGETS="FILEZILLA,SUBLIME,INTEL_MICROCODE"
+SUPPORTED_TARGETS="FILEZILLA,SUBLIME,INTEL_MICROCODE,WIRESHARK"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
@@ -20,10 +20,22 @@ EXEC_ITEMS_LIST=""
 FILEZILLA_NAME="filezilla"
 SUBLIME_NAME="sublime-text"
 INTEL_MICROCODE_NAME="intel-microcode"
+WIRESHARK_NAME="wireshark"
 
 apt_install_pkg()
 {
     sudo apt-get -y install $1
+}
+
+install_WIRESHARK()
+{
+    apt_install_pkg ${WIRESHARK_NAME}
+    apt_install_pkg ${WIRESHARK_NAME}-doc
+}
+
+install_INTEL_MICROCODE()
+{
+    apt_install_pkg ${INTEL_MICROCODE_NAME}
 }
 
 install_SUBLIME()
@@ -34,11 +46,6 @@ install_SUBLIME()
 install_FILEZILLA()
 {
     apt_install_pkg ${FILEZILLA_NAME}
-}
-
-install_INTEL_MICROCODE()
-{
-    apt_install_pkg ${INTEL_MICROCODE_NAME}
 }
 
 install_items_func()
