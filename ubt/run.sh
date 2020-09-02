@@ -12,7 +12,7 @@ set -e
 DOWNLOAD_DIR="downloads"
 
 SUPPORTED_CMD="install"
-SUPPORTED_TARGETS="FILEZILLA,SUBLIME,INTEL_MICROCODE,WIRESHARK"
+SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,INTEL_MICROCODE"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
@@ -21,10 +21,22 @@ FILEZILLA_NAME="filezilla"
 SUBLIME_NAME="sublime-text"
 INTEL_MICROCODE_NAME="intel-microcode"
 WIRESHARK_NAME="wireshark"
+FFMPEG_NAME="ffmpeg"
+VLC_NAME="vlc"
 
 apt_install_pkg()
 {
     sudo apt-get -y install $1
+}
+
+install_VLC()
+{
+    apt_install_pkg ${VLC}
+}
+
+install_FFMPEG()
+{
+    apt_install_pkg ${FFMPEG_NAME}
 }
 
 install_WIRESHARK()
@@ -66,7 +78,7 @@ usage_func()
 
     echoY "Usage:"
     echoY './run.sh -c <cmd> -l "<item list>"'
-    echoY "eg:\n./run.sh -c install -l ${SUPPORTED_TARGETS}"
+    echoY "eg:\n./run.sh -c install -l \"${SUPPORTED_TARGETS}\""
 
     echoC "Supported cmd:"
     echo "${SUPPORTED_CMD}"
