@@ -12,13 +12,14 @@ set -e
 DOWNLOAD_DIR="downloads"
 
 SUPPORTED_CMD="install"
-SUPPORTED_TARGETS="FILEZILLA,SUBLIME"
+SUPPORTED_TARGETS="FILEZILLA,SUBLIME,INTEL_MICROCODE"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
 
 FILEZILLA_NAME="filezilla"
 SUBLIME_NAME="sublime-text"
+INTEL_MICROCODE_NAME="intel-microcode"
 
 apt_install_pkg()
 {
@@ -33,6 +34,11 @@ install_SUBLIME()
 install_FILEZILLA()
 {
     apt_install_pkg ${FILEZILLA_NAME}
+}
+
+install_INTEL_MICROCODE()
+{
+    apt_install_pkg ${INTEL_MICROCODE_NAME}
 }
 
 install_items_func()
