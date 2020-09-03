@@ -12,7 +12,7 @@ set -e
 DOWNLOAD_DIR="downloads"
 
 SUPPORTED_CMD="install"
-SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,GEDIT,TREE,INTEL_MICROCODE"
+SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,GEDIT,TREE,HTOP,DNSUTILS,INTEL_MICROCODE"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
@@ -25,10 +25,22 @@ FFMPEG_NAME="ffmpeg"
 VLC_NAME="vlc"
 GEDIT_NAME="gedit"
 TREE_NAME="tree"
+HTOP_NAME="htop"
+DNSUTILS_NAME="dnsutils"
 
 apt_install_pkg()
 {
     sudo apt-get -y install $1
+}
+
+install_DNSUTILS()
+{
+    apt_install_pkg ${DNSUTILS_NAME}
+}
+
+install_HTOP()
+{
+    apt_install_pkg ${HTOP_NAME}
 }
 
 install_TREE()
