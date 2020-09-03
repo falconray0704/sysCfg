@@ -12,7 +12,7 @@ set -e
 DOWNLOAD_DIR="downloads"
 
 SUPPORTED_CMD="install"
-SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,GEDIT,INTEL_MICROCODE"
+SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,GEDIT,TREE,INTEL_MICROCODE"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
@@ -24,10 +24,16 @@ WIRESHARK_NAME="wireshark"
 FFMPEG_NAME="ffmpeg"
 VLC_NAME="vlc"
 GEDIT_NAME="gedit"
+TREE_NAME="tree"
 
 apt_install_pkg()
 {
     sudo apt-get -y install $1
+}
+
+install_TREE()
+{
+    apt_install_pkg ${TREE_NAME}
 }
 
 install_GEDIT()
