@@ -12,7 +12,7 @@ set -e
 DOWNLOAD_DIR="downloads"
 
 SUPPORTED_CMD="install"
-SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,INTEL_MICROCODE"
+SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,GEDIT,INTEL_MICROCODE"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
@@ -23,15 +23,21 @@ INTEL_MICROCODE_NAME="intel-microcode"
 WIRESHARK_NAME="wireshark"
 FFMPEG_NAME="ffmpeg"
 VLC_NAME="vlc"
+GEDIT_NAME="gedit"
 
 apt_install_pkg()
 {
     sudo apt-get -y install $1
 }
 
+install_GEDIT()
+{
+    apt_install_pkg ${GEDIT_NAME}
+}
+
 install_VLC()
 {
-    apt_install_pkg ${VLC}
+    apt_install_pkg ${VLC_NAME}
 }
 
 install_FFMPEG()
