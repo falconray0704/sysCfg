@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7.30
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    env_file: .env
+    volumes: 
+        - dbinit:/docker-entrypoint-initdb.d
+        - dbdata:/var/lib/mysql
+    networks:
+        - app-network
+    
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+        - 8080:8080
+    networks:
+        - app-network
+        
+
+volumes:
+  dbdata:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${INSTALL_ROOT_PATH}/${INSTALL_DIR}/${DATAS_ROOT_DIR}/${DBDATA_DIR}
+      o: bind
+  dbinit:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${INSTALL_ROOT_PATH}/${INSTALL_DIR}/${DATAS_ROOT_DIR}/${DBINIT_DIR}
+      o: bind
+
+networks:
+  app-network:
+    driver: bridge
+    
