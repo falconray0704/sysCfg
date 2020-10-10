@@ -10,7 +10,7 @@ set -o errexit
 
 . ../../libShell/echo_color.lib
 
-source ./cfgs/.env
+source ./.env
 
 stop_ddclient()
 {
