@@ -9,15 +9,6 @@ services:
       - PGID=1000
       - TZ=America/Los_AngelesEurope/London
     volumes:
-      - ddclientcfgs:/config
+      - ${INSTALL_ROOT_PATH}/${INSTALL_DIR}/${CFGS_DIR}/ddclient.conf:/config/ddclient.conf
     restart: unless-stopped
-
-
-volumes:
-  ddclientcfgs:
-    driver: local
-    driver_opts:
-      type: none
-      device: ${INSTALL_ROOT_PATH}/${INSTALL_DIR}/${CFGS_DIR}
-      o: bind
 

@@ -22,7 +22,7 @@ stop_ddclient()
 
         echoG "Stopping ddclient..."
 	pushd ${INSTALL_PATH}
-	docker-compose down
+	docker-compose down -v
 	popd
         echoG "Stopping ddclient is finished!"
     fi
