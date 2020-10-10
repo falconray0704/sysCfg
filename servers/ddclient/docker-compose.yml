@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  ddclient:
+    image: linuxserver/ddclient
+    container_name: ddclient
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_AngelesEurope/London
+    volumes:
+      - ddclientcfgs:/config
+    restart: unless-stopped
+
+
+volumes:
+  ddclientcfgs:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${INSTALL_ROOT_PATH}/${INSTALL_DIR}/${CFGS_DIR}
+      o: bind
+
