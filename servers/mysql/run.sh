@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# refer to:
+# https://github.com/erikwittek/multiuser-mysql/blob/master/add-users.sh
+# https://medium.com/@onexlab.io/docker-compose-mysql-multiple-database-fe640938e06b
+# https://github.com/oxlb/Docker-Compose-MySQL-Multiple-Databases/blob/master/docker-compose.yml
+
+
 set -o nounset
 set -o errexit
 # trace each command execute, same as `bash -v myscripts.sh`
@@ -10,12 +16,13 @@ set -o errexit
 
 . ../../libShell/echo_color.lib
 
-source ./cfgs/.env
+source ./.env
 
 stop_server()
 {
 	pushd ${INSTALL_PATH}
-	docker-compose down -v
+#	docker-compose down -v
+	docker-compose down
 	popd
 }
 
@@ -38,8 +45,9 @@ install_server()
 	    sudo mkdir -p ${DBDATA_PATH}
 	    sudo chown -hR $(id -un):$(id -gn) ${INSTALL_PATH}
 	    cp -a cfgs/dbinit ${DATAS_ROOT_PATH}
-	    cp cfgs/.env ${INSTALL_PATH}
-	    cp cfgs/docker-compose.yml ${INSTALL_PATH}
+	    cp ./.env ${INSTALL_PATH}
+	    cp ./docker-compose.yml ${INSTALL_PATH}
+	    cp ./run.sh ${INSTALL_PATH}
 
 	    echoG "MySQL has been installed in:\n$(tree -a ${INSTALL_PATH})."
 	    
