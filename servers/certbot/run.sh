@@ -10,7 +10,7 @@ set -o errexit
 
 . ../../libShell/echo_color.lib
 
-source ./cfgs/.env
+source ./.env
 
 renew_cert()
 {
@@ -22,8 +22,8 @@ renew_cert()
 
         # Renewing SSL Certificates and Credentials
         echoG "Renewing SSL Certificates and Credentials..."
-	docker run --rm --name certbot \
-	            -p 80:80 \
+		docker run --rm --name certbot \
+	        -p 80:80 \
 		    -p 443:443 \
 		    -v "${LETSENCRYPT_ETC_PATH}:/etc/letsencrypt" \
 		    -v "${LETSENCRYPT_LIB_VAR_PATH}:/var/lib/letsencrypt" \
@@ -42,22 +42,22 @@ get_cert()
     else
         # server configs initialize
         echoG "Initializing Certbot..."
-	echoY "DATAS_ROOT_PATH=${DATAS_ROOT_PATH}"
-	echoY "LETSENCRYPT_ETC_PATH=${LETSENCRYPT_ETC_PATH}"
-	echoY "LETSENCRYPT_LIB_VAR_PATH=${LETSENCRYPT_LIB_VAR_PATH}"
+		echoY "DATAS_ROOT_PATH=${DATAS_ROOT_PATH}"
+		echoY "LETSENCRYPT_ETC_PATH=${LETSENCRYPT_ETC_PATH}"
+		echoY "LETSENCRYPT_LIB_VAR_PATH=${LETSENCRYPT_LIB_VAR_PATH}"
 
         sudo mkdir -p ${LETSENCRYPT_ETC_PATH}
         sudo mkdir -p ${LETSENCRYPT_LIB_VAR_PATH}
 
         # Obtaining SSL Certificates and Credentials
         echoG "Obtaining SSL Certificates and Credentials..."
-	docker run --rm --name certbot \
-	            -p 80:80 \
+		docker run --rm --name certbot \
+	        -p 80:80 \
 		    -p 443:443 \
 		    -v "${LETSENCRYPT_ETC_PATH}:/etc/letsencrypt" \
 		    -v "${LETSENCRYPT_LIB_VAR_PATH}:/var/lib/letsencrypt" \
 		    certbot/certbot \
-		    certonly --standalone --email ${EMAIL_ADDR} --agree-tos --no-eff-email -d ${DOMAINNAME} -d ${DOMAINNAME_WWW}
+		    certonly --standalone --email ${EMAIL_ADDR} --agree-tos --no-eff-email -d ${DOMAINNAME_WWW} -d ${DOMAINNAME_BLOG}
         echoG "Deploying is finished!"
     fi
 
@@ -75,7 +75,7 @@ install_certbot()
             sudo mkdir -p ${INSTALL_ROOT_PATH}
             sudo chown $(id -un):$(id -gn) ${INSTALL_ROOT_PATH}
 
-            cp -a ./cfgs ${INSTALL_PATH}
+            cp -a ${PWD} ${INSTALL_ROOT_PATH}
             echoG "Certbot has been installed in ${INSTALL_PATH}."
             echoY "Please config your domain informations in ${INSTALL_PATH}/.env before certbot operations!"
 	    echo ""
