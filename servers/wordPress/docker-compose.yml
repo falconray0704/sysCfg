@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  wordpress:
+    #    depends_on: 
+    #      - db
+    #    image: wordpress:5.1.1-fpm-alpine
+    image: wordpress:php7.4-fpm
+    container_name: wordpress
+    restart: unless-stopped
+    #    env_file: .env
+    environment:
+      - WORDPRESS_DB_HOST=mysql:3306
+      - WORDPRESS_DB_USER=$MYSQL_USER
+      - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
+      - WORDPRESS_DB_NAME=dbwordpress
+    volumes:
+      - wordpress:/var/www/html
+      - wordpress-content:/var/www/html/wp-content
+    networks:
+      - cms-net
+      - db-net
+
+volumes:
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${INSTALL_ROOT_PATH}/${INSTALL_DIR}/${DATAS_ROOT_DIR}/${WORDPRESS_DIR}
+      o: bind
+  wordpress-content:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${INSTALL_ROOT_PATH}/${INSTALL_DIR}/${DATAS_ROOT_DIR}/${WP_CONTENT_DIR}
+      o: bind
+
+networks:
+  db-net:
+    external:
+      name: mysql_db-net
+  cms-net:
+    driver: bridge
+    
