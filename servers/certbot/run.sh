@@ -29,7 +29,7 @@ renew_cert()
 		    -v "${LETSENCRYPT_LIB_VAR_PATH}:/var/lib/letsencrypt" \
 		    certbot/certbot \
 		    renew
-        echoG "Renew is finished!"
+        echoG "Renewing cert finished!"
     fi
 }
 
@@ -57,8 +57,8 @@ get_cert()
 		    -v "${LETSENCRYPT_ETC_PATH}:/etc/letsencrypt" \
 		    -v "${LETSENCRYPT_LIB_VAR_PATH}:/var/lib/letsencrypt" \
 		    certbot/certbot \
-		    certonly --standalone --email ${EMAIL_ADDR} --agree-tos --no-eff-email -d ${DOMAINNAME_WWW} -d ${DOMAINNAME_BLOG}
-        echoG "Deploying is finished!"
+		    certonly --standalone --email ${EMAIL_ADDR} --agree-tos --no-eff-email -d ${DOMAINNAME} -d ${DOMAINNAME_WWW}
+        echoG "Obtaining cert finished!"
     fi
 
 }
