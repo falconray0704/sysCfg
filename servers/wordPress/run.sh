@@ -40,10 +40,14 @@ cfg_server()
 		# server configs initialize
 		echoG "Initializing WordPress..."
 
-		sudo mkdir -p ${DATAS_ROOT_PATH}
-		sudo mkdir -p ${WORDPRESS_DATA_PATH}
-		sudo mkdir -p ${WORDPRESS_CONTENT_DATA_PATH}
-		#sudo chown -hR root:docker ${DATAS_ROOT_PATH}
+		mkdir -p ${DATAS_ROOT_PATH}
+		mkdir -p ${WORDPRESS_DATA_PATH}
+		mkdir -p ${WP_USR_LOCAL_ETC_PHP_CONFD_PATH}
+		touch ${WP_PHP_CONFD_CONFINI}
+
+		#sudo mkdir -p ${WORDPRESS_CONTENT_DATA_PATH}
+		sudo chown -hR root:docker ${DATAS_ROOT_PATH}
+		#sudo chown -hR root:docker ${WORDPRESS_DATA_PATH}
 
 		
 		# enable update
