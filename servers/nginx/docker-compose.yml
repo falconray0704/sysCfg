@@ -1,0 +1,25 @@
+version: '3.6'
+services:
+  nginx:
+    image: nginx:${NGINX_TAG}
+    container_name: nginx
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ${NGINX_CONF_PATH}:/etc/nginx/conf.d
+      - ${NGINX_LOG_PATH}:/var/log/nginx
+      - ${WORDPRESS_DATA_PATH}:/var/www/html
+      - ${LETSENCRYPT_ETC_PATH}:/etc/letsencrypt
+    networks:
+      - wordpress-net
+      - nginx-net
+
+networks:
+  wordpress-net:
+    external:
+      name: wordpress_cms-net
+  nginx-net:
+    driver: bridge
+    
