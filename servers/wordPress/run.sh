@@ -74,6 +74,7 @@ install_server()
         mkdir -p ${INSTALL_PATH}
         cp -a ./.env ${INSTALL_PATH}
         cp -a ./run.sh ${INSTALL_PATH}
+        cp -a ./check-wordpress-version.sh ${INSTALL_PATH}
         cp -a ./docker-compose.yml ${INSTALL_PATH}
         echoG "WordPress has been installed in ${INSTALL_PATH}."
         echoY "Please config your user name and password for database in ${INSTALL_PATH}/.env before server configuration!"

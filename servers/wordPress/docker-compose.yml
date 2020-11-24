@@ -15,6 +15,8 @@ services:
     volumes:
       - ${WORDPRESS_DATA_PATH}:/var/www/html
       - ${WP_PHP_CONFD_CONFINI}:/usr/local/etc/php/conf.d/conf.ini
+      - ${WP_ENTRYPOINT_SCRIPT}:/usr/local/bin/check-wordpress-version.sh
+    entrypoint: ["/usr/local/bin/check-wordpress-version.sh"]
     networks:
       - cms-net
       - db-net
