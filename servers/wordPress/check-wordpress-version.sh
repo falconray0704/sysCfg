@@ -10,12 +10,13 @@
 # trace each command execute with attachment infomations, same as `bash -x myscripts.sh`
 #set -o xtrace
 
+$WORDPRESS_VERSION ?="undefine_version"
 
 VOLUME_VERSION="$(php -r 'require('"'"'/var/www/html/wp-includes/version.php'"'"'); echo $wp_version;')"
-echo "Volume version : "$VOLUME_VERSION
-echo "WordPress version : "$WORDPRESS_VERSION
+echo "Volume version : $VOLUME_VERSION"
+echo "WordPress version : $WORDPRESS_VERSION"
 
-if [ $VOLUME_VERSION != $WORDPRESS_VERSION ]; then
+if [ "$VOLUME_VERSION" != "$WORDPRESS_VERSION" ]; then
     echo "Forcing WordPress code update..."
     rm -f /var/www/html/index.php
     rm -f /var/www/html/wp-includes/version.php
