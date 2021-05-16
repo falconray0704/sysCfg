@@ -16,7 +16,7 @@ wget -c https://downloads.openwrt.org/releases/19.07.7/packages/aarch64_cortex-a
 
 wget -c https://downloads.openwrt.org/releases/19.07.7/packages/aarch64_cortex-a53/packages/libpcre_8.43-1_aarch64_cortex-a53.ipk
 wget -c https://downloads.openwrt.org/releases/19.07.7/packages/aarch64_cortex-a53/base/zlib_1.2.11-3_aarch64_cortex-a53.ipk
-wget -c https://downloads.openwrt.org/releases/19.07.7/packages/aarch64_cortex-a53/base/libopenssl1.1_1.1.1j-1_aarch64_cortex-a53.ipk
+wget -c https://downloads.openwrt.org/releases/19.07.7/packages/aarch64_cortex-a53/base/libopenssl1.1_1.1.1k-1_aarch64_cortex-a53.ipk
 wget -c https://downloads.openwrt.org/releases/19.07.7/packages/aarch64_cortex-a53/packages/wget_1.20.3-4_aarch64_cortex-a53.ipk
 
 popd
