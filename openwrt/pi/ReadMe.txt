@@ -1,4 +1,9 @@
 
+# refer to:
+https://openwrt.org/docs/guide-user/services/dns/dnscrypt_dnsmasq_dnscrypt-proxy2
+https://github.com/openwrt/packages/blob/master/net/shadowsocks-libev/README.md#recipes
+https://openwrt.org/docs/guide-user/services/proxy/shadowsocks
+
 1. Download resources:
     ./host_01_fetch_init_packages.sh
 
