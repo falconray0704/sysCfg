@@ -1,0 +1,13 @@
+
+piInit
+
+*.img
+*.img.gz
+*.ipk
+
+
+tmpConfigs
+tmpSSConfigs
+
+*.swp
+
