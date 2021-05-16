@@ -23,4 +23,5 @@ popd
 
 cp ./target_*.sh piInit/
 cp ./.env_target piInit/
+cp ./shadowsocks-libev piInit/
 

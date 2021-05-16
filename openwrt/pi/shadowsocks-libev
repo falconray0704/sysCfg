@@ -1,0 +1,36 @@
+config server 'sss0'
+	option disabled 0
+	option server '1.1.1.1'
+	option server_port '8000'
+	option password 'password'
+	option method 'chacha20-ietf-poly1305'
+    option fast_open 'true'
+    option no_delay 'true'
+    option mode 'tcp_and_udp'
+
+
+config ss_tunnel
+	option disabled 0
+	option server 'sss0'
+	option local_address '0.0.0.0'
+	option local_port '8053'
+	option tunnel_address '8.8.8.8:53'
+	option mode 'tcp_and_udp'
+
+config ss_redir ssr0
+	option disabled 0
+	option server 'sss0'
+	option local_address '0.0.0.0'
+	option local_port '1100'
+	option mode 'tcp_and_udp'
+	option reuse_port 1
+    option fast_open 'true'
+    option no_delay 'true'
+
+config ss_rules 'ss_rules'
+	option disabled 0
+	option redir_tcp 'ssr0'
+	option redir_udp 'ssr0'
+	option src_default 'checkdst'
+	option dst_default 'forward'
+	option local_default 'forward'

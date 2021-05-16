@@ -15,7 +15,32 @@ sudo cp -a piInit /mnt/piRoot/
 sync
 sudo umount ${PI_ROOT_DEV}
 
+3. Launch Pi with TF card without network cable connecting.
 
+4. Enable ssl for opkg:
+    ./target_01_enable_ssl_for_opkg.sh
+    reboot
+
+5. Connect network cable to LAN.
+
+6. Install basic packages:
+    ./target_02_install_basic_packages.sh
+    reboot
+
+7. Install dnscrypt-proxy:
+    ./target_03_install_dnscrypt_proxy.sh
+    reboot
+
+8. Plug usb network adapter for working as WAN.
+
+9. Config usb network adapter as WAN, and native eth0 as LAN:
+    ./target_04_reconfig_wan_lan_for_rounter.sh
+    reboot
+
+10. Install SS:
+    ./target_05_ss.sh
+    reboot
  
+11. Reconfig server IP, port, and password from LuCi.
 
 
