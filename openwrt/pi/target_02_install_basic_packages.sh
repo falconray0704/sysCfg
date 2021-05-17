@@ -8,6 +8,8 @@ opkg install vim-full diffutils
 opkg install iperf3
 opkg install kmod-usb-net-asix-ax88179
 opkg install kmod-tcp-bbr
+opkg install kmod-usb-net-rndis usb-modeswitch
+
 
 opkg remove dnsmasq
 opkg install dnsmasq-full
