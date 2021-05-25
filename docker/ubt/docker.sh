@@ -3,12 +3,12 @@
 set -o nounset
 set -o errexit
 
-#set -x
+set -x
 
 . ../../libShell/echo_color.lib
 . ../../libShell/sysEnv.lib
 
-DOCKER_COMPOSE_VERSION=1.26.0
+DOCKER_COMPOSE_VERSION=1.29.2
 
 distribution_eos_func()
 {
@@ -28,12 +28,35 @@ distribution_eos_func()
     echo "$ID$VERSION_ID"
 }
 
+distribution_mint_func()
+{
+    NAME="Ubuntu"
+    VERSION="18.04.4 LTS (Bionic Beaver)"
+    ID=ubuntu
+    ID_LIKE=debian
+    PRETTY_NAME="Ubuntu 18.04.4 LTS"
+    VERSION_ID="18.04"
+    HOME_URL="https://www.ubuntu.com/"
+    SUPPORT_URL="https://help.ubuntu.com/"
+    BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+    PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+    VERSION_CODENAME=tricia
+    UBUNTU_CODENAME=tricia
+
+    echo "$ID$VERSION_ID"
+}
+
+
 install_nVidia_func()
 {
     # Add the package repositories
     distribution=""
-    if [ $(os_distributor) == "elementary" ] && [ $(os_distribution_number) == "5.1.2" ]; then
+    if [ $(os_distributor) == "elementary" ] && [ $(os_distribution_number) == "5.1.2" ]
+    then
         distribution=$(distribution_eos_func)
+    elif [ $(os_distributor) == "LinuxMint" ] && [ $(os_distribution_number) == "19.3" ]
+    then
+        distribution=$(distribution_mint_func)
     else
         distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
     fi
