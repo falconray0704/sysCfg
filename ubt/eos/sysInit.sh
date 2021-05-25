@@ -6,24 +6,6 @@ set -o errexit
 . ../../libShell/echo_color.lib
 . ../../libShell/sysEnv.lib
 
-install_pinyin_input_method_func()
-{
-	# refer to: https://leimao.github.io/blog/Ubuntu-Gaming-Chinese-Input/
-	# Install fcitx input method system
-	sudo apt-get -y install fcitx-bin
-	# Install Google Pinyin Chinese input method
-	sudo apt-get -y  install fcitx-googlepinyin
-	
-	# https://kyooryoo.wordpress.com/2018/12/23/add-chinese-or-japanese-input-method-in-elementary-os-5-0-juno/
-	sudo apt-get install fcitx-table-all
-	sudo apt-get install fcitx fcitx-googlepinyin
-	sudo apt-get install im-config
-	#echoY "Run command for configure:"
-       	#echoG "$ im-config"
-	sudo im-config
-	reboot
-}
-
 install_touchpad_gestures_func()
 {
 	INSTALL_ROOT=${HOME}/installGestures
@@ -185,9 +167,6 @@ case $1 in
 	inputGroup) echoY "Join into group of input."
 		sudo gpasswd -a $USER input
 		reboot
-		;;
-	pinyin) echoY "Installing pinyin input method..."
-		install_pinyin_input_method_func
 		;;
 	*) echoR "Unsupported target:$1"
 		print_usage_func

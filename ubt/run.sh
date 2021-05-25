@@ -12,7 +12,7 @@ set -e
 DOWNLOAD_DIR="downloads"
 
 SUPPORTED_CMD="install"
-SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,GEDIT,TREE,HTOP,DNSUTILS,V4L_UTILS,SSHPASS,IPERF3,INTEL_MICROCODE,GIT,BASH_COMPLETION"
+SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,GEDIT,TREE,HTOP,DNSUTILS,V4L_UTILS,SSHPASS,IPERF3,INTEL_MICROCODE,GIT,BASH_COMPLETION,PINYIN"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
@@ -32,6 +32,7 @@ SSHPASS_NAME="sshpass"
 IPERF3_NAME="iperf3"
 GIT_NAME="git"
 BASH_COMPLETION_NAME="bash-completion"
+PINYIN_NAME="pinyin"
 
 apt_install_pkg()
 {
@@ -112,6 +113,22 @@ install_SUBLIME()
 install_FILEZILLA()
 {
     apt_install_pkg ${FILEZILLA_NAME}
+}
+
+install_PINYIN()
+{
+	# refer to: https://leimao.github.io/blog/Ubuntu-Gaming-Chinese-Input/
+	# Install fcitx input method system
+	apt_install_pkg fcitx-bin
+	# Install Google Pinyin Chinese input method
+	apt_install_pkg fcitx-googlepinyin
+	
+	# https://kyooryoo.wordpress.com/2018/12/23/add-chinese-or-japanese-input-method-in-elementary-os-5-0-juno/
+	apt_install_pkg fcitx-table-all fcitx fcitx-googlepinyin im-config
+	#echoY "Run command for configure:"
+       	#echoG "$ im-config"
+	sudo im-config
+	reboot
 }
 
 install_items_func()
