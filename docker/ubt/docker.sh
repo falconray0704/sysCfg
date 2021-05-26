@@ -3,7 +3,7 @@
 set -o nounset
 set -o errexit
 
-set -x
+#set -x
 
 . ../../libShell/echo_color.lib
 . ../../libShell/sysEnv.lib
