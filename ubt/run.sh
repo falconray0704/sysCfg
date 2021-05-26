@@ -128,7 +128,7 @@ install_PINYIN()
 	#echoY "Run command for configure:"
        	#echoG "$ im-config"
 	sudo im-config
-	reboot
+	echoY "Reboot system for applying input method."
 }
 
 install_items_func()
