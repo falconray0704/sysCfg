@@ -52,7 +52,7 @@ install_GIT()
 
 install_TERMINATOR()
 {
-    apt_install_pkg ${GIT_NAME}
+    apt_install_pkg ${TERMINATOR_NAME}
 }
 
 install_IPERF3()
