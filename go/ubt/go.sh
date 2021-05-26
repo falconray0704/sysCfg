@@ -10,7 +10,7 @@ set -o errexit
 . ../../libShell/echo_color.lib
 . ../../libShell/sysEnv.lib
 
-GOVERSION="1.15"
+GOVERSION="1.16.4"
 
 install_dependence_func()
 {
@@ -66,7 +66,7 @@ usage_func()
     echoY "Set go env:"
     echo 'export GOROOT=$HOME/go'
     echo 'export GOPATH=<path to your gopath>'
-    echo 'export PATH=$PATH:$GOROOT/bin'
+    echo 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin'
     echo "alias gw='cd \$GOPATH'"
 }
 
