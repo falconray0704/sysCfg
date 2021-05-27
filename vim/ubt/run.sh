@@ -35,7 +35,7 @@ install_vim_color()
 {
     mkdir -p downloads
     pushd downloads
-    rm -rf vim-code-dark
+    sudo rm -rf vim-code-dark
     git clone https://github.com/tomasiser/vim-code-dark.git
     
     pushd vim-code-dark
@@ -101,7 +101,7 @@ install_VIM_BOOTSTRAP()
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
 
     pushd ~/
-    rm -rf .vimrc vim .vim generate.vim
+    sudo rm -rf .vimrc vim .vim generate.vim
     mkdir -p ~/.vim
     popd
 
@@ -114,6 +114,7 @@ install_VIM_BOOTSTRAP()
     echo "git submodule update --init --recursive"
     #echo "python3 install.py --clang-completer --go-completer"
     echo "python3 install.py --all"
+    echo "python3 install.py install.py"
 
 }
 
