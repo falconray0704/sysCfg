@@ -1,5 +1,5 @@
 Plug 'craigemery/vim-autotag'
 Plug 'Valloric/YouCompleteMe'
 "Plug 'rip-rip/clang_complete'
-
+Plug 'morhetz/gruvbox'
 

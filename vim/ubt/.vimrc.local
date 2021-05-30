@@ -11,4 +11,7 @@ set shiftwidth=4
 set foldmethod=syntax
 
 
+colorscheme gruvbox
+set background=dark
+let g:vim_bootstrap_theme = "gruvbox"
 
