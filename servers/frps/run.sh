@@ -56,7 +56,7 @@ install_frps()
             sudo mkdir -p ${INSTALL_ROOT_PATH}
             sudo chown $(id -un):$(id -gn) ${INSTALL_ROOT_PATH}
 
-            cp -a cfgs ${INSTALL_PATH}/
+            cp -a ${PWD} ${INSTALL_PATH}
 
             echoG "frps has been installed in ${INSTALL_PATH}."
             echoY "Please config your frps informations in ${INSTALL_PATH}/cfgs/frps.ini before launch docker-compose!"
