@@ -12,7 +12,7 @@ set -e
 DOWNLOAD_DIR="downloads"
 
 SUPPORTED_CMD="install"
-SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,GEDIT,TREE,HTOP,DNSUTILS,V4L_UTILS,SSHPASS,IPERF3,INTEL_MICROCODE,GIT,BASH_COMPLETION,PINYIN,TERMINATOR"
+SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,GEDIT,TREE,HTOP,DNSUTILS,V4L_UTILS,SSHPASS,IPERF3,INTEL_MICROCODE,GIT,BASH_COMPLETION,PINYIN,TERMINATOR,REMMINA,XRDP"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
@@ -34,6 +34,8 @@ GIT_NAME="git"
 BASH_COMPLETION_NAME="bash-completion"
 PINYIN_NAME="pinyin"
 TERMINATOR_NAME="terminator"
+REMMINA_NAME="remmina"
+XRDP_NAME="xrdp"
 
 apt_install_pkg()
 {
@@ -135,6 +137,16 @@ install_PINYIN()
        	#echoG "$ im-config"
 	sudo im-config
 	echoY "Reboot system for applying input method."
+}
+
+install_REMMINA()
+{
+    apt_install_pkg ${REMMINA_NAME}
+}
+
+install_XRDP()
+{
+    apt_install_pkg ${XRDP_NAME}
 }
 
 install_items_func()
