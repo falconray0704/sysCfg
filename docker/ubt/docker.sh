@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# refer to: https://evodify.com/change-docker-storage-location/
+
 set -o nounset
 set -o errexit
 
@@ -7,6 +9,7 @@ set -o errexit
 
 . ../../libShell/echo_color.lib
 . ../../libShell/sysEnv.lib
+#. ./.env_host
 
 DOCKER_COMPOSE_VERSION=1.29.2
 
@@ -94,7 +97,7 @@ install_Docker_func()
     sudo apt-get update
 #    sudo apt-get install docker-ce
     sudo apt-get install docker-ce docker-ce-cli containerd.io
-    sudo docker run hello-world
+    sudo docker run --rm hello-world
 
     # use Docker as a non-root user
     #echo "User:$USER"
@@ -103,12 +106,38 @@ install_Docker_func()
     #sudo reboot
 }
 
+change_DataRoot()
+{
+    echoY "Docker data-root is going to change."    
+
+    if [ -f /etc/docker/daemon.json ]
+    then
+        echoR "Docker file: /etc/docker/daemon.json already existed!"
+    else
+        sudo cp ./cfgs/daemon.json /etc/docker/
+    fi
+    echoY "Apply your path to /etc/docker/daemon.json manually:"
+    echo "{"
+    echo "  \"data-root\": \"/var/lib/docker\""
+    echo "}"
+    echo ""
+
+    echoY "Exec following command for applying changes."
+    echo "sudo systemctl restart docker"
+    echo ""
+    echoY "and exec following command for cleaning old containers.(refer to: https://evodify.com/change-docker-storage-location/)"
+    echo "docker system prune -a"
+}
+
 check_Docker_Env_func()
 {
     docker info
     docker version
 
     docker run --rm hello-world
+
+    docker ps -a
+
 }
 
 uninstall_old_versions_func()
@@ -154,6 +183,7 @@ usage_func()
     echo "[installRepo]"
     echo "[installDocker]"
     echo "[checkDocker]"
+    echo "[changeDataRoot]"
     echo "[installDockerCompose]"
     echo "[uninstallDockerCompose]"
     echo "[installUtils]"
@@ -188,6 +218,9 @@ case $1 in
         ;;
     nVidia) echoY "Installing nvidia container toolkit..."
         install_nVidia_func
+        ;;
+    changeDataRoot) echoY "Changing data root ..."
+        change_DataRoot
         ;;
     *) echoR "Unknown cmd: $1"
         usage_func
