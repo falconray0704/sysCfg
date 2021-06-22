@@ -119,8 +119,8 @@ note_after_VIM_BOOTSTRAP()
     echo "cd ~/.vim/plugged/YouCompleteMe/"
     echo "git submodule update --init --recursive"
     #echo "python3 install.py --clang-completer --go-completer"
-    echo "python3 install.py --all"
-    #echo "python3 install.py install.py"
+    #echo "python3 install.py --all"
+    echo "python3 install.py"
 
 }
 
