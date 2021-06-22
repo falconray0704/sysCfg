@@ -31,16 +31,41 @@ apt_uninstall_pkg()
     sudo apt remove --purge $1
 }
 
+install_color_vim-code-dark()
+{
+    if [ ! -d vim-code-dark ]
+    then
+#    sudo rm -rf vim-code-dark
+    git clone https://github.com/tomasiser/vim-code-dark.git
+    fi
+
+    pushd vim-code-dark
+    cp -a autoload base16 colors ~/.vim/
+    popd
+}
+
+install_color_oceanic-next()
+{
+    if [ ! -d oceanic-next ]
+    then
+#    sudo rm -rf oceanic-next
+    git clone https://github.com/mhartington/oceanic-next.git
+    fi
+
+    pushd oceanic-next
+    cp -a after autoload colors estilo test ~/.vim/
+    popd
+}
+
+
 install_vim_color()
 {
     mkdir -p downloads
     pushd downloads
-    sudo rm -rf vim-code-dark
-    git clone https://github.com/tomasiser/vim-code-dark.git
-    
-    pushd vim-code-dark
-    cp -a autoload base16 colors ~/.vim/
-    popd
+
+    install_color_vim-code-dark
+    install_color_oceanic-next
+
     popd
 }
 
@@ -87,6 +112,17 @@ uninstall_VIM82()
     uninstall_8.2_third_part_repo
 }
 
+note_after_VIM_BOOTSTRAP()
+{
+    echoY "After install VIM_BOOTSTRAP, exec following command manually:"
+    echo "vim +PlugInstall +qall"
+    echo "cd ~/.vim/plugged/YouCompleteMe/"
+    echo "git submodule update --init --recursive"
+    #echo "python3 install.py --clang-completer --go-completer"
+    echo "python3 install.py --all"
+    #echo "python3 install.py install.py"
+
+}
 
 install_VIM_BOOTSTRAP()
 {
@@ -108,14 +144,7 @@ install_VIM_BOOTSTRAP()
     install_vim_color
     cp ./.vimrc* ~/
     
-    echoY "exec following command manually:"
-    echo "vim +PlugInstall +qall"
-    echo "cd ~/.vim/plugged/YouCompleteMe/"
-    echo "git submodule update --init --recursive"
-    #echo "python3 install.py --clang-completer --go-completer"
-    echo "python3 install.py --all"
-    echo "python3 install.py install.py"
-
+    note_after_VIM_BOOTSTRAP
 }
 
 uninstall_VIM_BOOTSTRAP(){
@@ -162,6 +191,8 @@ usage_func()
     echoC "Supported items:"
     echo "${SUPPORTED_TARGETS}"
     
+    echo ""
+    note_after_VIM_BOOTSTRAP
 }
 
 
