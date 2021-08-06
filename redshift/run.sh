@@ -7,10 +7,20 @@
 set -e
 #set -x
 
-. ../libShell/echo_color.lib
+export LIBSHELL_ROOT_PATH=${PWD}/../libShell
+. ${LIBSHELL_ROOT_PATH}/echo_color.lib
+. ${LIBSHELL_ROOT_PATH}/utils.lib
+. ${LIBSHELL_ROOT_PATH}/sysEnv.lib
 
-source .env_host
-
+# Checking environment setup symbolic link and its file exists
+if [ -L ".env_setup" ] && [ -f ".env_setup" ]
+then
+#    echoG "Symbolic .env_setup exists."
+    . ./.env_setup
+else
+    echoR "Setup environment informations by making .env_setup symbolic link to specific .env_setup_xxx file(eg: .env_setup_amd64_ubt_1804) ."
+    exit 1
+fi
 
 SUPPORTED_CMD="cfg"
 SUPPORTED_TARGETS="redshift"
@@ -18,28 +28,12 @@ SUPPORTED_TARGETS="redshift"
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
 
-exec_items_iterator()
-{
-    local exec_cmd=$1
-    local exec_items_list=$2
-
-    local exec_items_num=`echo ${exec_items_list}|awk -F"," '{print NF}'`
-    local i=1
-    for (( ; $i<=${exec_items_num} ; i++)); do
-        local item
-        eval item='`echo ${exec_items_list}|awk -F, "{ print $"$i" }"`'
-        local exec_name=${exec_cmd}_${item}
-        ${exec_name} ${exec_cmd} ${item}
-    done
-
-}
-
 cfg_redshift()
 {
     mkdir -p downloads
     pushd downloads
     
-    if [ ! -d redshift ]
+    if [ ! -d redshift/.git ]
     then
         git clone --depth=1 https://github.com/jonls/redshift.git
     fi
@@ -105,7 +99,7 @@ done
 
 case ${EXEC_CMD} in
     "cfg")
-        exec_items_iterator ${EXEC_CMD} ${EXEC_ITEMS_LIST}
+        cfg_items ${EXEC_CMD} ${EXEC_ITEMS_LIST}
         ;;
     "*")
         echoR "Unsupport cmd:${EXEC_CMD}"
