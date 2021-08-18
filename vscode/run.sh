@@ -38,7 +38,7 @@ install_server_extensions()
 {
     echoY "Installing vscode server extensions ..."
 
-    cat ./vscode_extensions_list.txt | xargs -n 1 code-server --install-extension
+    cat ./vscode_server_extensions_list.txt | xargs -n 1 code-server --install-extension
 }
 
 uninstall_server_extensions()
