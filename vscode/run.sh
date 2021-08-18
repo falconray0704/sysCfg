@@ -29,10 +29,23 @@ fi
 
 
 SUPPORTED_CMD="install,uninstall,backup"
-SUPPORTED_TARGETS="vscode,extensions"
+SUPPORTED_TARGETS="vscode,extensions,server_extensions"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
+
+install_server_extensions()
+{
+    echoY "Installing vscode server extensions ..."
+
+    cat ./vscode_extensions_list.txt | xargs -n 1 code-server --install-extension
+}
+
+uninstall_server_extensions()
+{
+    echoY "Cleaning vscode server extensions..."
+    code --list-extensions | xargs -n 1 code-server --uninstall-extension
+}
 
 install_vscode()
 {
@@ -88,9 +101,11 @@ usage_func()
     echoY './run.sh -c <cmd> -l "<item list>"'
     echoY "eg:\n./run.sh -c backup -l \"extensions\""
     echoY "eg:\n./run.sh -c install -l \"vscode\""
-    echoY "eg:\n./run.sh -c install -l \"extensions\""
     echoY "eg:\n./run.sh -c uninstall -l \"vscode\""
+    echoY "eg:\n./run.sh -c install -l \"extensions\""
     echoY "eg:\n./run.sh -c uninstall -l \"extensions\""
+    echoY "eg:\n./run.sh -c install -l \"server_extensions\""
+    echoY "eg:\n./run.sh -c uninstall -l \"server_extensions\""
 
     echoC "Supported cmd:"
     echo "${SUPPORTED_CMD}"
