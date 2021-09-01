@@ -5,34 +5,19 @@
 
 #set -o
 set -e
-#set -x
+set -x
 
 . ../libShell/echo_color.lib
+. ../libShell/utils.lib
 
 source .env_host
 
 
 SUPPORTED_CMD="sync"
-SUPPORTED_TARGETS="shadowsocks-libev,manifest-tool"
+SUPPORTED_TARGETS="shadowsocks-libev,manifest-tool,frp"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
-
-exec_items_iterator()
-{
-    local exec_cmd=$1
-    local exec_items_list=$2
-
-    local exec_items_num=`echo ${exec_items_list}|awk -F"," '{print NF}'`
-    local i=1
-    for (( ; $i<=${exec_items_num} ; i++)); do
-        local item
-        eval item='`echo ${exec_items_list}|awk -F, "{ print $"$i" }"`'
-        local exec_name=${exec_cmd}_${item}
-        ${exec_name} ${exec_cmd} ${item}
-    done
-
-}
 
 sync_repo_branch()
 {
@@ -74,7 +59,7 @@ sync_repo_branchs()
         sync_repo_branch ${repo_name} ${branch_name} ${repo_upstream_name} 
     done
 
-    echoG "Syncing branchs ${repo_name}:${repo_branchs}:${branchs_num} successed!"
+    echoG "Syncing branchs ${repo_name}:${repo_branchs} successed, total branchs:${branchs_num} !"
 }
 
 sync_items_func()
@@ -82,11 +67,12 @@ sync_items_func()
     local exec_cmd=$1
     local exec_items_list=$2
 
-    git config --global credential.helper 'cache --timeout 7200'
+#    git config --global credential.helper 'cache --timeout 7200'
+#    git config --global --unset credential.helper
 
     exec_items_iterator ${exec_cmd} ${exec_items_list} 
 
-    git config --global --unset credential.helper
+#    git config --global --unset credential.helper
 }
 
 sync_shadowsocks-libev()
@@ -111,12 +97,24 @@ sync_manifest-tool()
     sync_repo_branchs ${repo_name} ${repo_branchs} ${repo_upstream_name}
 }
 
+sync_frp()
+{
+    local exec_cmd=$1
+    local repo_name=$2
+    local repo_branchs="master,dev"
+    local repo_upstream_name="upstream"
+
+    echoY ${repo_name} ${repo_branchs} ${repo_upstream_name}
+    sync_repo_branchs ${repo_name} ${repo_branchs} ${repo_upstream_name}
+}
+
+
 usage_func()
 {
 
     echoY "Usage:"
     echoY './run.sh -c <cmd> -l "<item list>"'
-    echoY "eg:\n./run.sh -c sync -l \"shadowsocks-libev,manifest-tool\""
+    echoY "eg:\n./run.sh -c sync -l \"shadowsocks-libev,manifest-tool,frp\""
 
     echoC "Supported cmd:"
     echo "${SUPPORTED_CMD}"
