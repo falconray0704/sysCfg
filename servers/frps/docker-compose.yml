@@ -2,8 +2,11 @@ version: '3'
 
 services:
   frps:
-    image: rayruan/frp:${IMAGE_TAG}
+    image: ${DOCKER_TARGET}
     container_name: frps
+    ports:
+      - "7000:7000/tcp"
+      - "6000:6000/tcp"
     environment:
       - PUID=1000
       - PGID=1000

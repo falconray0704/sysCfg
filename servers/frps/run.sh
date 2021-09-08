@@ -7,13 +7,43 @@ set -o errexit
 # trace each command execute with attachment infomations, same as `bash -x myscripts.sh`
 #set -o xtrace
 
+#set -o
+set -e
+#set -x
 
-. ../../libShell/echo_color.lib
+source ./.env_run_server
 
-source ./.env
+export LIBSHELL_ROOT_PATH=${ENV_RUN_LIBSHELL_ROOT_PATH}
+. ${LIBSHELL_ROOT_PATH}/echo_color.lib
+. ${LIBSHELL_ROOT_PATH}/utils.lib
+. ${LIBSHELL_ROOT_PATH}/sysEnv.lib
+
+# Checking environment setup symbolic link and its file exists
+if [ -L ".env_setup" ] && [ -f ".env_setup" ]
+then
+#    echoG "Symbolic .env_setup exists."
+    . ./.env_setup
+else
+    echoR "Setup environment informations by making .env_setup symbolic link to specific .env_setup_xxx file(eg: .env_setup_amd64_ubt_1804) ."
+    exit 1
+fi
+
+
+SUPPORTED_CMD="install,start,stop"
+SUPPORTED_TARGETS="frps"
+
+EXEC_CMD=""
+EXEC_ITEMS_LIST=""
 
 stop_frps()
 {
+
+    local TARGET_USER_NAME=${DOCKER_USER_NAME}
+    local TARGET_NAME=${FRP_DOCKER_NAME}
+    local TARGET_ARCH=${OSENV_DOCKER_CPU_ARCH}
+
+    export DOCKER_TARGET=${TARGET_USER_NAME}/${TARGET_ARCH}_${FRP_DOCKER_NAME}:${VERSION_RELEASE_FRP}
+
     if [ ! -d ${INSTALL_PATH} ]
     then
         echoR "Could not find frps installation in ${INSTALL_ROOT_PATH}!"
@@ -30,6 +60,12 @@ stop_frps()
 
 start_frps()
 {
+    local TARGET_USER_NAME=${DOCKER_USER_NAME}
+    local TARGET_NAME=${FRP_DOCKER_NAME}
+    local TARGET_ARCH=${OSENV_DOCKER_CPU_ARCH}
+
+    export DOCKER_TARGET="${TARGET_USER_NAME}/${TARGET_ARCH}_${FRP_DOCKER_NAME}:${VERSION_RELEASE_FRP}"
+   
     if [ ! -d ${INSTALL_PATH} ]
     then
         echoR "Could not find frps installation in ${INSTALL_ROOT_PATH}!"
@@ -64,46 +100,34 @@ install_frps()
         fi
 }
 
+
 usage_func()
 {
+
     echoY "Usage:"
-    echoY "./run.sh -c install -t frps"
-    echoY "-c:Operating command."
-    echoY "-t:Operating target."
-    echo ""
+    echoY './run.sh -c <cmd> -l "<item list>"'
+    echoY "eg:\n./run.sh -c install -l \"frps\""
+    echoY "eg:\n./run.sh -c start -l \"frps\""
+    echoY "eg:\n./run.sh -c stop -l \"frps\""
 
-    echoY "Supported commands:"
-    echoY "[ install, start, stop ]"
-    echo ""
-
-    echoY "Supported targets for install command:"
-    echoY "[ frps ]"
-    echo ""
-    
-    echoY "Supported targets for start command:"
-    echoY "[ frps ]"
-    echo ""
-    
-    echoY "Supported targets for stop command:"
-    echoY "[ frps ]"
-    echo ""
+    echoC "Supported cmd:"
+    echo "${SUPPORTED_CMD}"
+    echoC "Supported items:"
+    echo "${SUPPORTED_TARGETS}"
     
 }
 
-EXEC_COMMAND=""
-EXEC_TARGET=""
-
 no_args="true"
-while getopts "c:t:" opts
+while getopts "c:l:" opts
 do
     case $opts in
         c)
-              # Execute command
-              EXEC_COMMAND=$OPTARG
+              # cmd
+              EXEC_CMD=$OPTARG
               ;;
-        t)
-              # Executing target
-              EXEC_TARGET=$OPTARG
+        l)
+              # items list
+              EXEC_ITEMS_LIST=$OPTARG
               ;;
         :)
             echo "The option -$OPTARG requires an argument."
@@ -124,8 +148,23 @@ do
 done
 
 [[ "$no_args" == "true" ]] && { usage_func; exit 1; }
+#[ $# -lt 1 ] && echoR "Invalid args count:$# " && usage_func && exit 1
 
-exec_operation=${EXEC_COMMAND}_${EXEC_TARGET}
 
-${exec_operation}
+case ${EXEC_CMD} in
+    "install")
+        install_items ${EXEC_CMD} ${EXEC_ITEMS_LIST}
+        ;;
+    "start")
+        start_items ${EXEC_CMD} ${EXEC_ITEMS_LIST}
+        ;;
+    "stop")
+        stop_items ${EXEC_CMD} ${EXEC_ITEMS_LIST}
+        ;;
+    "*")
+        echoR "Unsupport cmd:${EXEC_CMD}"
+        ;;
+esac
+
+
 
