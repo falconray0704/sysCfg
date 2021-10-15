@@ -14,7 +14,7 @@ source .env_host
 
 
 SUPPORTED_CMD="sync"
-SUPPORTED_TARGETS="shadowsocks-libev,manifest-tool,frp"
+SUPPORTED_TARGETS="shadowsocks-libev,manifest-tool,frp,zap"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
@@ -108,13 +108,25 @@ sync_frp()
     sync_repo_branchs ${repo_name} ${repo_branchs} ${repo_upstream_name}
 }
 
+sync_zap()
+{
+    local exec_cmd=$1
+    local repo_name=$2
+    local repo_branchs="master,dev,release"
+    local repo_upstream_name="upstream"
+
+    echoY ${repo_name} ${repo_branchs} ${repo_upstream_name}
+    sync_repo_branchs ${repo_name} ${repo_branchs} ${repo_upstream_name}
+}
+
+
 
 usage_func()
 {
 
     echoY "Usage:"
     echoY './run.sh -c <cmd> -l "<item list>"'
-    echoY "eg:\n./run.sh -c sync -l \"shadowsocks-libev,manifest-tool,frp\""
+    echoY "eg:\n./run.sh -c sync -l \"${SUPPORTED_TARGETS}\""
 
     echoC "Supported cmd:"
     echo "${SUPPORTED_CMD}"
