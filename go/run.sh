@@ -25,7 +25,7 @@ fi
 SUPPORTED_CMD="install, srcInstall, upgrade"
 SUPPORTED_TARGETS="dependence,goBootStrap,go"
 
-GOVERSION="1.17"
+GOVERSION="1.17.2"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
