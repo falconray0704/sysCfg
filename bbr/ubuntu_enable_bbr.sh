@@ -31,6 +31,10 @@ elif [ "$DISTRIB_RELEASE" == "16.04" ]; then
     apt-get update -y
     apt-get install -y --install-recommends linux-generic-hwe-16.04
     apt-get autoremove -y
+elif [ "$DISTRIB_RELEASE" == "18.04" ]; then
+    apt-get update -y
+    apt-get install -y --install-recommends linux-generic-hwe-18.04
+    apt-get autoremove -y
 else
     # check kernel version
     if dpkg --compare-versions "$KERNEL_VERSION" "ge" "4.9"; then
