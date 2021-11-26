@@ -90,6 +90,9 @@ install_VIM82()
 {
     apt_uninstall_pkg ${VIM_NAME}
 
+
+    sudo apt-get -y install software-properties-common
+
     # refer to: https://sourcedigit.com/24976-vim-8-2-released-how-to-install-vim-in-ubuntu-linux/
     sudo add-apt-repository ppa:jonathonf/vim
     sudo apt update
@@ -120,7 +123,7 @@ note_after_VIM_BOOTSTRAP()
     echo "git submodule update --init --recursive"
     #echo "python3 install.py --clang-completer --go-completer"
     #echo "python3 install.py --all"
-    echo "python3 install.py"
+    echo "python3 install.py --all"
 
 }
 
@@ -130,6 +133,7 @@ install_VIM_BOOTSTRAP()
     sudo apt-get -y install automake autogen autoconf build-essential cmake
     sudo apt-get -y install git wget curl tree
     sudo apt-get -y install python3-dev
+    sudo apt-get -y install default-jdk
 
     # refer to: https://stackoverflow.com/questions/65284572/your-c-compiler-does-not-fully-support-c17
     sudo apt-get -y install gcc-8 g++-8 npm
