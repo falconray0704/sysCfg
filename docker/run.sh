@@ -3,6 +3,10 @@
 # refer to:
 # https://www.cnblogs.com/kevingrace/p/11753294.html
 
+# raspbian Debian 11 bullseye, install docker-ce refer to:
+# https://www.linuxtechi.com/install-docker-engine-on-debian/
+# but...Here we go, we install docker.io instead of docker-ce
+
 #set -o
 set -e
 #set -x
@@ -30,13 +34,22 @@ SUPPORTED_TARGETS="repo,docker,DockerCompose,utils,nvidia,root"
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
 
-uninstall_old_docker_ubuntu()
+uninstall_old_docker_apt()
 {
     if [ ${OSENV_DIST_ID} == "Ubuntu" ] && [ ${OSENV_DIST_CODENAME} == "bionic" ] && [ ${OSENV_OS_CPU_ARCH} == "x86_64" ]
     then
         sudo apt-get -y purge docker-ce docker-ce-cli containerd.io
+        sudo apt-get -y purge docker.io docker-doc docker-clean
+	sync
         sudo reboot
         exit 0
+    elif [ ${OSENV_DIST_ID} == "Debian" ] && [ ${OSENV_DIST_CODENAME} == "bullseye" ] && [ ${OSENV_OS_CPU_ARCH} == "aarch64" ]
+    then
+        sudo apt-get -y purge docker.io docker-doc docker-clean
+        sudo apt-get -y purge docker-ce docker-ce-cli containerd.io
+	sync
+        sudo reboot
+	exit 0
     else
         echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID}."
     fi
@@ -51,12 +64,30 @@ install_repo()
         sudo apt-get update
         sudo apt-get -y install ca-certificates curl gnupg lsb-release
         
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+#        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+#        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+#            ${OSENV_DIST_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        curl -fsSL https://download.docker.com/${OSENV_DOCKER_OS}/${OSENV_DOCKER_DIST_ID}/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/${OSENV_DOCKER_OS}/${OSENV_DOCKER_DIST_ID} \
+            ${OSENV_DIST_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt-get update
+    elif [ ${OSENV_DIST_ID} == "Debian" ] && [ ${OSENV_DIST_CODENAME} == "bullseye" ] && [ ${OSENV_OS_CPU_ARCH} == "aarch64" ]
+    then
+
+        sudo apt-get update
+	sudo apt install -y \
+		apt-transport-https \
+		ca-certificates \
+		curl \
+		gnupg2 \
+		software-properties-common
+        
+        curl -fsSL https://download.docker.com/${OSENV_DOCKER_OS}/${OSENV_DOCKER_DIST_ID}/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/${OSENV_DOCKER_OS}/${OSENV_DOCKER_DIST_ID} \
             ${OSENV_DIST_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
         sudo apt-get update
     else
-        echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID}."
+        echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID} OSENV_DIST_CODENAME:${OSENV_DIST_CODENAME} ."
     fi
 
     echoG "Installed docker repo success!"
@@ -74,7 +105,8 @@ uninstall_repo()
     fi
     set -e
 
-    if [ ${OSENV_DIST_ID} == "Ubuntu" ] && [ ${OSENV_DIST_CODENAME} == "bionic" ] && [ ${OSENV_OS_CPU_ARCH} == "x86_64" ]
+    if ( [ ${OSENV_DIST_ID} == "Ubuntu" ] && [ ${OSENV_DIST_CODENAME} == "bionic" ] && [ ${OSENV_OS_CPU_ARCH} == "x86_64" ] ) || \
+       ( [ ${OSENV_DIST_ID} == "Debian" ] && [ ${OSENV_DIST_CODENAME} == "bullseye" ] && [ ${OSENV_OS_CPU_ARCH} == "aarch64" ] )
     then
         set +e
         sudo rm -rf /usr/share/keyrings/docker-archive-keyring.gpg
@@ -93,20 +125,25 @@ uninstall_repo()
 install_docker()
 {
     echoY "Installing docker..."
+
+    set +e
+    which docker
+    if [ $? == 0 ]
+    then
+        uninstall_old_docker_apt
+    fi
+    set -e
+
+    uninstall_repo
+    install_repo
+
     if [ ${OSENV_DIST_ID} == "Ubuntu" ] && [ ${OSENV_DIST_CODENAME} == "bionic" ] && [ ${OSENV_OS_CPU_ARCH} == "x86_64" ]
     then
-        set +e
-        which docker
-        if [ $? == 0 ]
-        then
-            uninstall_old_docker_ubuntu
-        fi
-        set -e
-
-        uninstall_repo
-        install_repo
-
         sudo apt-get -y install docker-ce docker-ce-cli containerd.io
+        sudo usermod -aG docker $USER
+    elif [ ${OSENV_DIST_ID} == "Debian" ] && [ ${OSENV_DIST_CODENAME} == "bullseye" ] && [ ${OSENV_OS_CPU_ARCH} == "aarch64" ]
+    then
+        sudo apt-get -y install docker.io docker-doc docker-clean
         sudo usermod -aG docker $USER
     else
         echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID}."
@@ -121,14 +158,15 @@ uninstall_docker()
     echoY "Images, containers, volumes, or customized configuration files on your host are not automatically removed. To delete all images, containers, and volumes:"
     echoY "sudo rm -rf /var/lib/docker"
     echoY "sudo rm -rf /var/lib/containerd"
-    uninstall_old_docker_ubuntu
+    uninstall_old_docker_apt
     echoG "Uninstalling docker successed!"
 }
 
 install_utils()
 {
     echoY "Installing bridge-utils ..."
-    if [ ${OSENV_DIST_ID} == "Ubuntu" ] && [ ${OSENV_DIST_CODENAME} == "bionic" ] && [ ${OSENV_OS_CPU_ARCH} == "x86_64" ]
+    if ( [ ${OSENV_DIST_ID} == "Ubuntu" ] && [ ${OSENV_DIST_CODENAME} == "bionic" ] && [ ${OSENV_OS_CPU_ARCH} == "x86_64" ] ) || \
+       ( [ ${OSENV_DIST_ID} == "Debian" ] && [ ${OSENV_DIST_CODENAME} == "bullseye" ] && [ ${OSENV_OS_CPU_ARCH} == "aarch64" ] )
     then
         sudo apt-get install bridge-utils
     else
@@ -164,23 +202,43 @@ cfg_DataRoot()
 install_DockerCompose()
 {
     echoY "Installing docker compose ..."
-    sudo mkdir -p /usr/local/lib/docker/cli-plugins
 
-    # refer to https://docs.docker.com/compose/install/#install-compose
-    sudo curl -L https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-${OSENV_DOCKER_OS}-${OSENV_OS_CPU_ARCH} -o /usr/local/lib/docker/cli-plugins/docker-compose
-    sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+    if [ ${OSENV_DIST_ID} == "Ubuntu" ] && [ ${OSENV_DIST_CODENAME} == "bionic" ] && [ ${OSENV_OS_CPU_ARCH} == "x86_64" ]
+    then
+        sudo mkdir -p /usr/local/lib/docker/cli-plugins
 
-    # check
-    docker compose version
+        # refer to https://docs.docker.com/compose/install/#install-compose
+        sudo curl -L https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-${OSENV_DOCKER_OS}-${OSENV_OS_CPU_ARCH} -o /usr/local/lib/docker/cli-plugins/docker-compose
+        sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+	# check
+        docker compose version
+    elif [ ${OSENV_DIST_ID} == "Debian" ] && [ ${OSENV_DIST_CODENAME} == "bullseye" ] && [ ${OSENV_OS_CPU_ARCH} == "aarch64" ]
+    then
+        sudo apt-get -y install docker-compose
+        docker-compose version
+    else
+        echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID}."
+    fi
+
+
     echoG "docker compose installed successfully!"
 }
 
 uninstall_DockerCompose()
 {
     echoY "Uninstalling docker compose ..."
-    sudo rm -rf /usr/local/lib/docker/cli-plugins/docker-compose
-    echoG "docker compose uninstalled successfully!"
-    sudo ls -al /usr/local/lib/docker/cli-plugins/
+
+    if [ ${OSENV_DIST_ID} == "Ubuntu" ] && [ ${OSENV_DIST_CODENAME} == "bionic" ] && [ ${OSENV_OS_CPU_ARCH} == "x86_64" ]
+    then
+        sudo rm -rf /usr/local/lib/docker/cli-plugins/docker-compose
+        echoG "docker compose uninstalled successfully!"
+        sudo ls -al /usr/local/lib/docker/cli-plugins/
+    elif [ ${OSENV_DIST_ID} == "Debian" ] && [ ${OSENV_DIST_CODENAME} == "bullseye" ] && [ ${OSENV_OS_CPU_ARCH} == "aarch64" ]
+    then
+        sudo apt-get -y purge docker-compose
+    else
+        echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID}."
+    fi
 }
 
 usage_func()
