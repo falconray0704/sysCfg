@@ -29,13 +29,14 @@ else
 fi
 
 SUPPORTED_CMD="install,uninstall,cfg"
-SUPPORTED_TARGETS="repo,docker,DockerCompose,utils,nvidia,root"
+SUPPORTED_TARGETS="repo,docker,DockerCompose,utils,DataRoot"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
 
 uninstall_old_docker_apt()
 {
+    set +e
     if [ ${OSENV_DIST_ID} == "Ubuntu" ] && [ ${OSENV_DIST_CODENAME} == "bionic" ] && [ ${OSENV_OS_CPU_ARCH} == "x86_64" ]
     then
         sudo apt-get -y purge docker-ce docker-ce-cli containerd.io
@@ -53,6 +54,7 @@ uninstall_old_docker_apt()
     else
         echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID}."
     fi
+    set -e
 }
 
 install_repo()
@@ -74,18 +76,19 @@ install_repo()
     elif [ ${OSENV_DIST_ID} == "Debian" ] && [ ${OSENV_DIST_CODENAME} == "bullseye" ] && [ ${OSENV_OS_CPU_ARCH} == "aarch64" ]
     then
 
-        sudo apt-get update
-	sudo apt install -y \
-		apt-transport-https \
-		ca-certificates \
-		curl \
-		gnupg2 \
-		software-properties-common
+#        sudo apt-get update
+#	sudo apt install -y \
+#		apt-transport-https \
+#		ca-certificates \
+#		curl \
+#		gnupg2 \
+#		software-properties-common
         
-        curl -fsSL https://download.docker.com/${OSENV_DOCKER_OS}/${OSENV_DOCKER_DIST_ID}/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/${OSENV_DOCKER_OS}/${OSENV_DOCKER_DIST_ID} \
-            ${OSENV_DIST_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        sudo apt-get update
+#        curl -fsSL https://download.docker.com/${OSENV_DOCKER_OS}/${OSENV_DOCKER_DIST_ID}/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+#        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/${OSENV_DOCKER_OS}/${OSENV_DOCKER_DIST_ID} \
+#            ${OSENV_DIST_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+#        sudo apt-get update
+	echoY "Raspbian(Debian11 bullseye) self contain docker.io, no need to install repo."
     else
         echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID} OSENV_DIST_CODENAME:${OSENV_DIST_CODENAME} ."
     fi
@@ -105,16 +108,19 @@ uninstall_repo()
     fi
     set -e
 
-    if ( [ ${OSENV_DIST_ID} == "Ubuntu" ] && [ ${OSENV_DIST_CODENAME} == "bionic" ] && [ ${OSENV_OS_CPU_ARCH} == "x86_64" ] ) || \
-       ( [ ${OSENV_DIST_ID} == "Debian" ] && [ ${OSENV_DIST_CODENAME} == "bullseye" ] && [ ${OSENV_OS_CPU_ARCH} == "aarch64" ] )
+    if [ ${OSENV_DIST_ID} == "Ubuntu" ] && [ ${OSENV_DIST_CODENAME} == "bionic" ] && [ ${OSENV_OS_CPU_ARCH} == "x86_64" ]
     then
         set +e
+
         sudo rm -rf /usr/share/keyrings/docker-archive-keyring.gpg
         sudo rm -rf /etc/apt/sources.list.d/docker.list
         sudo apt autoremove -y
         sudo apt-get update
 
         set -e
+    elif [ ${OSENV_DIST_ID} == "Debian" ] && [ ${OSENV_DIST_CODENAME} == "bullseye" ] && [ ${OSENV_OS_CPU_ARCH} == "aarch64" ]
+    then
+	echoY "Raspbian(Debian11 bullseye) self contain docker.io, no need to uninstall repo."
     else
         echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID} OSENV_DIST_CODENAME:${OSENV_DIST_CODENAME}."
     fi
@@ -301,6 +307,7 @@ case ${EXEC_CMD} in
         install_items ${EXEC_CMD} ${EXEC_ITEMS_LIST}
         ;;
     "uninstall")
+	    echoG "items: ${EXEC_ITEMS_LIST}"
         uninstall_items ${EXEC_CMD} ${EXEC_ITEMS_LIST}
         ;;
     "cfg")
