@@ -302,6 +302,8 @@ install_DockerComposeCEV2()
         docker compose version
     elif [ $(is_Pi3BP_Raspbian_armv7l_Debian_bullseye) -eq 1 ]
     then
+        sudo mkdir -p /usr/local/lib/docker/cli-plugins
+
         # refer to https://docs.docker.com/compose/install/#install-compose
         #echo "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-${OSENV_DOCKER_OS}-${OSENV_OS_CPU_ARCH}"
         sudo curl -L https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-${OSENV_DOCKER_OS}-armv7 -o /usr/local/lib/docker/cli-plugins/docker-compose
