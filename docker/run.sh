@@ -37,7 +37,8 @@ uninstall_old_dockerIO_apt()
 {
     set +e
     echoY "Uninstalling old dockerIO..."
-    if [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
+    if [ $(is_Ubuntu_x86_64_jammy) -eq 1 ] || \
+            [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_aarch64_Debian_bullseye) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_armv7l_Debian_bullseye) -eq 1 ]
     then
@@ -65,6 +66,10 @@ uninstall_old_dockerCE_apt()
 	sync
 #        sudo reboot
 #	exit 0
+    elif [ $(is_Ubuntu_x86_64_jammy) -eq 1 ]
+    then
+	sudo apt-get -y purge docker-ce docker-ce-cli containerd.io docker-compose-plugin
+	sudo apt-get update
     else
         echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID}."
     fi
@@ -85,7 +90,8 @@ install_repoCE()
 	    lsb-release \
 	    software-properties-common
  
-    if [ $(is_Ubuntu_x86_64_bionic) -eq 1 ]
+    if [ $(is_Ubuntu_x86_64_jammy) -eq 1 ] || \
+            [ $(is_Ubuntu_x86_64_bionic) -eq 1 ]
     then
 
 #        sudo apt-get update
@@ -127,7 +133,8 @@ uninstall_repoCE()
     fi
     set -e
 
-    if [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
+    if [ $(is_Ubuntu_x86_64_jammy) -eq 1 ] || \
+            [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_aarch64_Debian_bullseye) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_armv7l_Debian_bullseye) -eq 1 ]
     then
@@ -160,7 +167,8 @@ install_dockerIO()
     set -e
 
 
-    if [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
+    if [ $(is_Ubuntu_x86_64_jammy) -eq 1 ] || \
+            [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_aarch64_Debian_bullseye) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_armv7l_Debian_bullseye) -eq 1 ]
     then
@@ -189,11 +197,13 @@ install_dockerCE()
     uninstall_repoCE
     install_repoCE
 
-    if [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
+    if [ $(is_Ubuntu_x86_64_jammy) -eq 1 ] || \
+            [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_aarch64_Debian_bullseye) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_armv7l_Debian_bullseye) -eq 1 ]
     then
-        sudo apt-get -y install docker-ce docker-ce-cli containerd.io
+        #sudo apt-get -y install docker-ce docker-ce-cli containerd.io
+	sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
         sudo usermod -aG docker $USER
     else
         echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID}."
@@ -216,7 +226,8 @@ uninstall_docker()
 install_utils()
 {
     echoY "Installing bridge-utils ..."
-    if [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
+    if [ $(is_Ubuntu_x86_64_jammy) -eq 1 ] || \
+            [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_aarch64_Debian_bullseye) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_armv7l_Debian_bullseye) -eq 1 ]
     then
@@ -255,10 +266,12 @@ install_DockerComposeIO()
 {
     echoY "Installing docker compose ..."
 
-    if [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
+    if [ $(is_Ubuntu_x86_64_jammy) -eq 1 ] || \
+            [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_aarch64_Debian_bullseye) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_armv7l_Debian_bullseye) -eq 1 ]
     then
+	sudo apt-get update
         sudo apt-get -y install docker-compose
         docker-compose version
     else
@@ -273,7 +286,8 @@ uninstall_DockerComposeIO()
 {
     echoY "Uninstalling docker compose ..."
 
-    if [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
+    if [ $(is_Ubuntu_x86_64_jammy) -eq 1 ] || \
+            [ $(is_Ubuntu_x86_64_bionic) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_aarch64_Debian_bullseye) -eq 1 ] || \
 	    [ $(is_Pi3BP_Raspbian_armv7l_Debian_bullseye) -eq 1 ]
     then
@@ -300,6 +314,10 @@ install_DockerComposeCEV2()
         sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 	# check
         docker compose version
+    elif [ $(is_Ubuntu_x86_64_jammy) -eq 1 ]
+    then
+	sudo apt-get update
+	sudo apt-get install docker-compose-plugin
     elif [ $(is_Pi3BP_Raspbian_armv7l_Debian_bullseye) -eq 1 ]
     then
         sudo mkdir -p /usr/local/lib/docker/cli-plugins
@@ -329,6 +347,10 @@ uninstall_DockerComposeCEV2()
         sudo rm -rf /usr/local/lib/docker/cli-plugins/docker-compose
         echoG "docker compose uninstalled successfully!"
         sudo ls -al /usr/local/lib/docker/cli-plugins/
+    elif [ $(is_Ubuntu_x86_64_jammy) -eq 1 ]
+    then
+        sudo apt-get -y purge docker-compose-plugin
+	sudo apt-get update
     else
         echoR "Unsupported OSENV_OS_CPU_ARCH:${OSENV_OS_CPU_ARCH} OSENV_DIST_ID:${OSENV_DIST_ID}."
     fi
