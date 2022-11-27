@@ -53,7 +53,7 @@ install_REDSHIFT_GTK()
 
 install_QEMU_KVM()
 {
-    apt_install_pkg qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon virt-manager
+    apt_install_pkg "qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon virt-manager"
     sudo systemctl enable --now libvirtd
 }
 
@@ -159,7 +159,7 @@ install_PINYIN()
 	apt_install_pkg fcitx-googlepinyin
 	
 	# https://kyooryoo.wordpress.com/2018/12/23/add-chinese-or-japanese-input-method-in-elementary-os-5-0-juno/
-	apt_install_pkg fcitx-table-all fcitx fcitx-googlepinyin im-config
+	apt_install_pkg "fcitx-table-all fcitx fcitx-googlepinyin im-config"
 	#echoY "Run command for configure:"
        	#echoG "$ im-config"
 	sudo im-config
