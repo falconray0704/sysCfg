@@ -55,11 +55,12 @@ install_CINNAMON()
 install_REDSHIFT_GTK()
 {
     apt_install_pkg ${REDSHIFT_GTK_NAME}
+    cp ${PWD}/../configs/redshift.conf ${HOME}/.config/
 }
 
 install_QEMU_KVM()
 {
-    apt_install_pkg "qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon virt-manager"
+    apt_install_pkg "qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon virt-manager guestfs-tools"
     sudo systemctl enable --now libvirtd
 }
 
@@ -88,6 +89,8 @@ install_GIT()
 install_TERMINATOR()
 {
     apt_install_pkg ${TERMINATOR_NAME}
+    mkdir -p ${HOME}/.config/terminator
+    cp ${PWD}/../configs/terminator/config ${HOME}/.config/terminator/
 }
 
 install_IPERF3()

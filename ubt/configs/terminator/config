@@ -1,0 +1,24 @@
+[global_config]
+[keybindings]
+[profiles]
+  [[default]]
+    cursor_shape = ibeam
+    cursor_color = "#26a269"
+    cursor_color_fg = False
+    scrollback_infinite = True
+    palette = "#2e3436:#e06c75:#98c379:#d19a66:#61afef:#c678dd:#56b6c2:#abb2bf:#5c6370:#e06c75:#98c379:#d19a66:#61afef:#c678dd:#56b6c2:#ffffff"
+  [[One Dark]]
+    cursor_shape = ibeam
+    cursor_color = "#26a269"
+    cursor_color_fg = False
+    palette = "#2e3436:#e06c75:#98c379:#d19a66:#61afef:#c678dd:#56b6c2:#abb2bf:#5c6370:#e06c75:#98c379:#d19a66:#61afef:#c678dd:#56b6c2:#ffffff"
+[layouts]
+  [[default]]
+    [[[window0]]]
+      type = Window
+      parent = ""
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+      profile = One Dark
+[plugins]
