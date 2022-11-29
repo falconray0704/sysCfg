@@ -12,7 +12,7 @@ set -e
 DOWNLOAD_DIR="downloads"
 
 SUPPORTED_CMD="install,uninstall"
-SUPPORTED_TARGETS="VIM,VIM82,VIM_BOOTSTRAP"
+SUPPORTED_TARGETS="VIM,VIM_BOOTSTRAP"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
@@ -70,7 +70,8 @@ install_vim_color()
 }
 
 install_vim_extensions() {
-    sudo apt-get -y install ctags git exuberant-ctags ncurses-term curl
+    #sudo apt-get -y install ctags git exuberant-ctags ncurses-term curl
+    sudo apt-get -y install universal-ctags git ncurses-term curl
 }
 
 install_VIM()
@@ -88,6 +89,7 @@ uninstall_VIM()
 
 install_VIM82()
 {
+    exit 0
     apt_uninstall_pkg ${VIM_NAME}
 
 
@@ -103,6 +105,7 @@ install_VIM82()
 
 uninstall_8.2_third_part_repo()
 {
+    exit 0
     sudo apt install ppa-purge
     sudo ppa-purge ppa:jonathonf/vim
     sudo add-apt-repository --remove ppa:jonathonf/vim
@@ -110,6 +113,7 @@ uninstall_8.2_third_part_repo()
 
 uninstall_VIM82()
 {
+    exit 0
     apt_uninstall_pkg ${VIM82_NAME}
 
     uninstall_8.2_third_part_repo
@@ -136,9 +140,11 @@ install_VIM_BOOTSTRAP()
     sudo apt-get -y install default-jdk
 
     # refer to: https://stackoverflow.com/questions/65284572/your-c-compiler-does-not-fully-support-c17
-    sudo apt-get -y install gcc-8 g++-8 npm
-    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+    #sudo apt-get -y install gcc-8 g++-8 npm
+    #sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+    #sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+    
+    sudo apt-get -y install composer npm
 
     pushd ~/
     sudo rm -rf .vimrc vim .vim generate.vim
@@ -187,8 +193,10 @@ usage_func()
     echoY "Usage:"
     echoY './run.sh -c <cmd> -l "<item list>"'
     #echoY "eg:\n./run.sh -c install -l \"${SUPPORTED_TARGETS}\""
-    echoY "eg:\n./run.sh -c install -l \"VIM82,VIM_BOOTSTRAP\""
-    echoY "eg:\n./run.sh -c uninstall -l \"VIM82,VIM_BOOTSTRAP\""
+    #echoY "eg:\n./run.sh -c install -l \"VIM82,VIM_BOOTSTRAP\""
+    #echoY "eg:\n./run.sh -c uninstall -l \"VIM82,VIM_BOOTSTRAP\""
+    echoY "eg:\n./run.sh -c install -l \"VIM,VIM_BOOTSTRAP\""
+    echoY "eg:\n./run.sh -c uninstall -l \"VIM,VIM_BOOTSTRAP\""
 
     echoC "Supported cmd:"
     echo "${SUPPORTED_CMD}"

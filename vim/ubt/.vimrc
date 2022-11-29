@@ -1,4 +1,4 @@
-" vim-bootstrap 2021-05-25 08:23:55
+" vim-bootstrap 2022-11-29 04:40:44
 
 "*****************************************************************************
 "" Vim-Plug core
@@ -10,7 +10,7 @@ else
   let curl_exists=expand('curl')
 endif
 
-let g:vim_bootstrap_langs = "c,go,html,javascript,lua,perl,python,typescript"
+let g:vim_bootstrap_langs = "c,erlang,go,html,javascript,lua,perl,php,python,rust,typescript"
 let g:vim_bootstrap_editor = "vim"				" nvim or vim
 let g:vim_bootstrap_theme = "codedark"
 let g:vim_bootstrap_frams = "vuejs"
@@ -81,6 +81,10 @@ Plug 'vim-scripts/c.vim', {'for': ['c', 'cpp']}
 Plug 'ludwig/split-manpage.vim'
 
 
+" erlang
+Plug 'jimenezrick/vimerl'
+
+
 " go
 "" Go Lang Bundle
 Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
@@ -111,10 +115,36 @@ Plug 'vim-perl/vim-perl'
 Plug 'c9s/perlomni.vim'
 
 
+" php
+"" PHP Bundle
+Plug 'phpactor/phpactor', {'for': 'php', 'do': 'composer install --no-dev -o'}
+Plug 'stephpy/vim-php-cs-fixer'
+
+
 " python
 "" Python Bundle
 Plug 'davidhalter/jedi-vim'
 Plug 'raimon49/requirements.txt.vim', {'for': 'requirements'}
+
+
+" rust
+" Vim racer
+Plug 'racer-rust/vim-racer'
+
+" Rust.vim
+Plug 'rust-lang/rust.vim'
+
+" Async.vim
+Plug 'prabirshrestha/async.vim'
+
+" Vim lsp
+Plug 'prabirshrestha/vim-lsp'
+
+" Asyncomplete.vim
+Plug 'prabirshrestha/asyncomplete.vim'
+
+" Asyncomplete lsp.vim
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
 
 " typescript
@@ -197,6 +227,12 @@ let no_buffers_menu=1
 colorscheme codedark
 
 
+" Better command line completion 
+set wildmenu
+
+" mouse support
+set mouse=a
+
 set mousemodel=popup
 set t_Co=256
 set guioptions=egmrti
@@ -212,7 +248,7 @@ else
 
   " IndentLine
   let g:indentLine_enabled = 1
-  let g:indentLine_concealcursor = 0
+  let g:indentLine_concealcursor = ''
   let g:indentLine_char = '┆'
   let g:indentLine_faster = 1
 
@@ -286,13 +322,13 @@ cnoreabbrev Qall qall
 
 "" NERDTree configuration
 let g:NERDTreeChDirMode=2
-let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
+let g:NERDTreeIgnore=['node_modules','\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
 let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let g:NERDTreeShowBookmarks=1
 let g:nerdtree_tabs_focus_on_files=1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
 let g:NERDTreeWinSize = 50
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*node_modules/
 nnoremap <silent> <F2> :NERDTreeFind<CR>
 nnoremap <silent> <F3> :NERDTreeToggle<CR>
 
@@ -363,13 +399,13 @@ noremap <Leader>v :<C-u>vsplit<CR>
 
 "" Git
 noremap <Leader>ga :Gwrite<CR>
-noremap <Leader>gc :Gcommit<CR>
-noremap <Leader>gsh :Gpush<CR>
-noremap <Leader>gll :Gpull<CR>
-noremap <Leader>gs :Gstatus<CR>
-noremap <Leader>gb :Gblame<CR>
-noremap <Leader>gd :Gvdiff<CR>
-noremap <Leader>gr :Gremove<CR>
+noremap <Leader>gc :Git commit --verbose<CR>
+noremap <Leader>gsh :Git push<CR>
+noremap <Leader>gll :Git pull<CR>
+noremap <Leader>gs :Git<CR>
+noremap <Leader>gb :Git blame<CR>
+noremap <Leader>gd :Gvdiffsplit<CR>
+noremap <Leader>gr :GRemove<CR>
 
 " session management
 nnoremap <leader>so :OpenSession<Space>
@@ -487,6 +523,11 @@ autocmd FileType c setlocal tabstop=4 shiftwidth=4 expandtab
 autocmd FileType cpp setlocal tabstop=4 shiftwidth=4 expandtab
 
 
+" erlang
+let erlang_folding = 1
+let erlang_show_errors = 1
+
+
 " go
 " vim-go
 " run :GoBuild or :GoTestCompile based on the go file
@@ -576,6 +617,33 @@ augroup END
 " perl
 
 
+" php
+" Phpactor plugin
+" Include use statement
+nmap <Leader>u :call phpactor#UseAdd()<CR>
+" Invoke the context menu
+nmap <Leader>mm :call phpactor#ContextMenu()<CR>
+" Invoke the navigation menu
+nmap <Leader>nn :call phpactor#Navigate()<CR>
+" Goto definition of class or class member under the cursor
+nmap <Leader>oo :call phpactor#GotoDefinition()<CR>
+nmap <Leader>oh :call phpactor#GotoDefinition('hsplit')<CR>
+nmap <Leader>ov :call phpactor#GotoDefinition('vsplit')<CR>
+nmap <Leader>ot :call phpactor#GotoDefinition('tabnew')<CR>
+" Show brief information about the symbol under the cursor
+nmap <Leader>K :call phpactor#Hover()<CR>
+" Transform the classes in the current file
+nmap <Leader>tt :call phpactor#Transform()<CR>
+" Generate a new class (replacing the current file)
+nmap <Leader>cc :call phpactor#ClassNew()<CR>
+" Extract expression (normal mode)
+nmap <silent><Leader>ee :call phpactor#ExtractExpression(v:false)<CR>
+" Extract expression from selection
+vmap <silent><Leader>ee :<C-U>call phpactor#ExtractExpression(v:true)<CR>
+" Extract method from selection
+vmap <silent><Leader>em :<C-U>call phpactor#ExtractMethod()<CR>
+
+
 " python
 " vim-python
 augroup vimrc-python
@@ -605,6 +673,14 @@ let g:airline#extensions#virtualenv#enabled = 1
 
 " Syntax highlight
 let python_highlight_all = 1
+
+
+" rust
+" Vim racer
+au FileType rust nmap gd <Plug>(rust-def)
+au FileType rust nmap gs <Plug>(rust-def-split)
+au FileType rust nmap gx <Plug>(rust-def-vertical)
+au FileType rust nmap <leader>gd <Plug>(rust-doc)
 
 
 " typescript
