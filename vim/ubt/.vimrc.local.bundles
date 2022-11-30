@@ -1,7 +1,0 @@
-Plug 'craigemery/vim-autotag'
-Plug 'Valloric/YouCompleteMe'
-"Plug 'rip-rip/clang_complete'
-Plug 'morhetz/gruvbox'
-Plug 'mhartington/oceanic-next'
-Plug 'octol/vim-cpp-enhanced-highlight'
-

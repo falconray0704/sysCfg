@@ -2,6 +2,7 @@
 
 # refer to:
 # https://www.cnblogs.com/kevingrace/p/11753294.html
+# https://edward0im.github.io/technology/2020/09/17/en-vim/
 
 #set -o
 set -e
@@ -12,14 +13,12 @@ set -e
 DOWNLOAD_DIR="downloads"
 
 SUPPORTED_CMD="install,uninstall"
-SUPPORTED_TARGETS="VIM,VIM_BOOTSTRAP"
+SUPPORTED_TARGETS="VIM,VundleVim"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
 
 VIM_NAME="vim"
-VIM82_NAME="vim"
-VIM_BOOTSTRAP_NAME="vim_bootstrap"
 
 apt_install_pkg()
 {
@@ -31,7 +30,7 @@ apt_uninstall_pkg()
     sudo apt remove --purge $1
 }
 
-install_color_vim-code-dark()
+install_color_one_dark()
 {
     if [ ! -d vim-code-dark ]
     then
@@ -40,37 +39,24 @@ install_color_vim-code-dark()
     fi
 
     pushd vim-code-dark
+    mkdir -p ~/.vim
     cp -a autoload base16 colors ~/.vim/
     popd
 }
-
-install_color_oceanic-next()
-{
-    if [ ! -d oceanic-next ]
-    then
-#    sudo rm -rf oceanic-next
-    git clone https://github.com/mhartington/oceanic-next.git
-    fi
-
-    pushd oceanic-next
-    cp -a after autoload colors estilo test ~/.vim/
-    popd
-}
-
 
 install_vim_color()
 {
     mkdir -p downloads
     pushd downloads
 
-    install_color_vim-code-dark
-    install_color_oceanic-next
+#    install_color_one_dark
+#    install_color_vim-code-dark
+#    install_color_oceanic-next
 
     popd
 }
 
 install_vim_extensions() {
-    #sudo apt-get -y install ctags git exuberant-ctags ncurses-term curl
     sudo apt-get -y install universal-ctags git ncurses-term curl
 }
 
@@ -87,78 +73,52 @@ uninstall_VIM()
     apt_uninstall_pkg ${VIM_NAME}
 }
 
-install_VIM82()
+note_after_VundleVim()
 {
-    exit 0
-    apt_uninstall_pkg ${VIM_NAME}
+    echoY "After install VundleVim, exec following command manually:"
+    echo "vim +BundleInstall +qall"
+    echo "cd  ~/.vim/bundle/youcompleteme"
 
-
-    sudo apt-get -y install software-properties-common
-
-    # refer to: https://sourcedigit.com/24976-vim-8-2-released-how-to-install-vim-in-ubuntu-linux/
-    sudo add-apt-repository ppa:jonathonf/vim
-    sudo apt update
-    sudo apt-get -y install vim
-
-    install_vim_extensions
-}
-
-uninstall_8.2_third_part_repo()
-{
-    exit 0
-    sudo apt install ppa-purge
-    sudo ppa-purge ppa:jonathonf/vim
-    sudo add-apt-repository --remove ppa:jonathonf/vim
-}
-
-uninstall_VIM82()
-{
-    exit 0
-    apt_uninstall_pkg ${VIM82_NAME}
-
-    uninstall_8.2_third_part_repo
-}
-
-note_after_VIM_BOOTSTRAP()
-{
-    echoY "After install VIM_BOOTSTRAP, exec following command manually:"
-    echo "vim +PlugInstall +qall"
-    echo "cd ~/.vim/plugged/YouCompleteMe/"
     echo "git submodule update --init --recursive"
     #echo "python3 install.py --clang-completer --go-completer"
     #echo "python3 install.py --all"
     echo "python3 install.py --all"
+    # Copy .ycm_extra_conf.py to ~/.vim
+    echo "cp  ${HOME}/.vim/bundle/youcompleteme/third_party/ycmd/.ycm_extra_conf.py  ${HOME}/.vim/"
 
 }
 
-install_VIM_BOOTSTRAP()
+install_VundleVim()
 {
- 
+    # Make ~/.vim/bundle directory.
+    mkdir -p ${HOME}/.vim/bundle
+    cd ${HOME}/.vim/bundle
+    git clone https://github.com/VundleVim/Vundle.vim 
+    cd -
+
+    # Move .vimrc to home folder.
+    cp  configs/vimrc1_ycm  ${HOME}/.vimrc
+
+    # Move codedark.vim to ~/.vim/colors folder.
+    mkdir -p ${HOME}/.vim/colors
+    cp  configs/codedark.vim  ${HOME}/.vim/colors
+
+    sudo apt-get -y install build-essential cmake vim-nox python3-dev
+    sudo apt-get -y install mono-complete nodejs openjdk-17-jdk openjdk-17-jre npm
+
     sudo apt-get -y install automake autogen autoconf build-essential cmake
-    sudo apt-get -y install git wget curl tree
-    sudo apt-get -y install python3-dev
-    sudo apt-get -y install default-jdk
 
-    # refer to: https://stackoverflow.com/questions/65284572/your-c-compiler-does-not-fully-support-c17
-    #sudo apt-get -y install gcc-8 g++-8 npm
-    #sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-    #sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
-    
-    sudo apt-get -y install composer npm
+    #sudo apt-get -y install composer npm
 
-    pushd ~/
-    sudo rm -rf .vimrc vim .vim generate.vim
-    mkdir -p ~/.vim
-    popd
+#    cd ${HOME}/.vim/bundle/YouCompleteMe
+#    python3 install.py --all
+#    cd -
+    note_after_VundleVim
 
-    install_vim_color
-    cp ./.vimrc* ~/
-    
-    note_after_VIM_BOOTSTRAP
 }
 
-uninstall_VIM_BOOTSTRAP(){
-    echoY "Do nothing for uninstall: ${VIM_BOOTSTRAP_NAME}."
+uninstall_VundleVim(){
+    sudo rm -rf ${HOME}/.vim*
 }
 
 install_items_func()
@@ -192,11 +152,8 @@ usage_func()
 
     echoY "Usage:"
     echoY './run.sh -c <cmd> -l "<item list>"'
-    #echoY "eg:\n./run.sh -c install -l \"${SUPPORTED_TARGETS}\""
-    #echoY "eg:\n./run.sh -c install -l \"VIM82,VIM_BOOTSTRAP\""
-    #echoY "eg:\n./run.sh -c uninstall -l \"VIM82,VIM_BOOTSTRAP\""
-    echoY "eg:\n./run.sh -c install -l \"VIM,VIM_BOOTSTRAP\""
-    echoY "eg:\n./run.sh -c uninstall -l \"VIM,VIM_BOOTSTRAP\""
+    echoY "eg:\n./run.sh -c install -l \"VIM,VundleVim\""
+    echoY "eg:\n./run.sh -c uninstall -l \"VIM,VundleVim\""
 
     echoC "Supported cmd:"
     echo "${SUPPORTED_CMD}"
@@ -204,7 +161,7 @@ usage_func()
     echo "${SUPPORTED_TARGETS}"
     
     echo ""
-    note_after_VIM_BOOTSTRAP
+    note_after_VundleVim
 }
 
 
