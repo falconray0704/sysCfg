@@ -1,0 +1,16 @@
+
+export Source_VM_Name="ubt220401_seeds"
+export Source_VM_Root_Path="/mnt/hd1/kvms"
+export Source_VM_Dir="${Source_VM_Name}"
+export Source_VM_Path="${Source_VM_Root_Path}/${Source_VM_Dir}"
+
+export Destination_VM_Name="ubt220401_clone"
+export Destination_VM_Root_Path="/media/ray/mhd500/kvms"
+export Destination_VM_Dir="${Destination_VM_Name}"
+export Destination_VM_Path="${Destination_VM_Root_Path}/${Destination_VM_Dir}"
+
+
+export Snapshots_Path="${Destination_VM_Path}/snapshots"
+export Snapshots_List="${Snapshots_Path}/${Source_VM_Name}_snapshots.list"
+
+
