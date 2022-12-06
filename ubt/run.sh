@@ -12,7 +12,7 @@ set -e
 DOWNLOAD_DIR="downloads"
 
 SUPPORTED_CMD="install"
-SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,GEDIT,TREE,HTOP,DNSUTILS,V4L_UTILS,SSHPASS,IPERF3,INTEL_MICROCODE,GIT,BASH_COMPLETION,PINYIN,TERMINATOR,REMMINA,XRDP,GTKTERM,GNOME_TWEAKS,QEMU_KVM,REDSHIFT_GTK,CINNAMON"
+SUPPORTED_TARGETS="FILEZILLA,SUBLIME,WIRESHARK,FFMPEG,VLC,GEDIT,TREE,HTOP,DNSUTILS,V4L_UTILS,SSHPASS,IPERF3,INTEL_MICROCODE,GIT,BASH_COMPLETION,PINYIN,TERMINATOR,REMMINA,XRDP,GTKTERM,GNOME_TWEAKS,QEMU_KVM,REDSHIFT_GTK,CINNAMON,BLUETOOTH"
 
 EXEC_CMD=""
 EXEC_ITEMS_LIST=""
@@ -41,10 +41,19 @@ GNOME_TWEAKS_NAME="gnome-tweaks"
 QEMU_KVM_NAME="qemu-kvm"
 REDSHIFT_GTK_NAME="redshift-gtk"
 CINNAMON_NAME="cinnamon-desktop-environment"
+BLUETOOTH="bluez bluetooth blueman"
 
 apt_install_pkg()
 {
     sudo apt-get -y install $1
+}
+
+install_BLUETOOTH()
+{
+	# Fix K380 keyboard can't be searched on ubuntu 22.04
+	# Refer to: https://thecyberpunker.com/howto/linux-how-to-fix-the-logitech-k380-keyboard-bluetooth-connection-problem/
+    apt_install_pkg ${BLUETOOTH}
+	sudo systemctl start bluetooth
 }
 
 install_CINNAMON()
