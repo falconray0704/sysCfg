@@ -1,0 +1,11 @@
+
+export Source_VM_Name="ubt220401_seeds-clone"
+export Source_VM_Root_Path="/mnt/hd1/kvms"
+export Source_VM_Backup_Dir="${Source_VM_Name}_configs_bak"
+export Source_VM_Backup_Path="${Source_VM_Root_Path}/${Source_VM_Name}/${Source_VM_Backup_Dir}"
+
+
+export Snapshots_Path="${Source_VM_Backup_Path}/snapshots"
+export Snapshots_List="${Snapshots_Path}/${Source_VM_Name}_snapshots.list"
+
+
