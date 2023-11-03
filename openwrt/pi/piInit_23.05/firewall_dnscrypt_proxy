@@ -1,0 +1,30 @@
+
+# Redirect unencrypted DNS queries to dnscrypt-proxy
+# This will thwart manual DNS client settings and hardcoded DNS servers like in Google devices
+config redirect
+    option name 'Divert-DNS, port 53'
+    option src 'lan'
+    option dest 'lan'
+    option src_dport '53'
+    option dest_port '53'
+    option target 'DNAT'
+
+# Block DNS-over-TLS over port 853
+# Assuming you're not actually running a DoT stub resolver
+config rule
+    option name 'Reject-DoT, port 853'
+    option src 'lan'
+    option dest 'wan'
+    option dest_port '853'
+    option proto 'tcp'
+    option target 'REJECT'
+
+# Optional: Redirect queries for DNS servers running on non-standard ports. Can repeat for 9953, 1512, 54. Check https://github.com/parrotgeek1/ProxyDNS for examples.
+# Warning: can break stuff, don't use this one if you run an mDNS server
+config redirect
+    option name 'Divert-DNS, port 5353'
+    option src 'lan'
+    option dest 'lan'
+    option src_dport '5353'
+    option dest_port '53'
+    option target 'DNAT'

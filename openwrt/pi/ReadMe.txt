@@ -1,57 +1,41 @@
 
-# refer to:
+# References:
+https://github.com/openwrt/openwrt
+https://www.v2fly.org
+https://guide.v2fly.org/
+https://github.com/v2fly/v2ray-core
+https://github.com/v2fly/v2ray-examples
+https://github.com/v2fly/docker
+https://github.com/dnscrypt/dnscrypt-proxy/wiki/Installation-on-OpenWRT
 https://openwrt.org/docs/guide-user/services/dns/dnscrypt_dnsmasq_dnscrypt-proxy2
-https://github.com/openwrt/packages/blob/master/net/shadowsocks-libev/README.md#recipes
-https://openwrt.org/docs/guide-user/services/proxy/shadowsocks
-https://openwrt.org/docs/guide-user/network/wan/wwan/ethernetoverusb_rndis
-
-1. Download resources:
-    ./host_01_fetch_init_packages.sh
+https://openwrt.org/docs/guide-user/base-system/uci
+https://github.com/vernesong/OpenClash.git
 
 
-2. Install openwrt with TF card:
+1. Install self-building OpenWrt with OpenClash integrated.
+
+Install openwrt with TF card:
+
 export TARGET_DEV="/dev/<disk>"
 export PI_BOOT_DEV="${TARGET_DEV}1"
 export PI_ROOT_DEV="${TARGET_DEV}2"
 
 sudo umount ${PI_BOOT_DEV} ${PI_ROOT_DEV}
-sudo dd if=openwrt-19.07.7-brcm2708-bcm2710-rpi-3-ext4-factory.img of=${TARGET_DEV} bs=2M
-sudo mount ${PI_ROOT_DEV} /mnt/piRoot
-sudo cp -a piInit /mnt/piRoot/
-sync
-sudo umount ${PI_ROOT_DEV}
+sudo dd bs=1M count=200 if=/dev/zero of=/dev/sda status=progress
+sudo dd if=openwrt-bcm27xx-bcm2710-rpi-3-squashfs-factory.img of=${TARGET_DEV} bs=2M status=progress
 
-3. Launch Pi with TF card without network cable connecting.
+2. Plugin usb ethernet adapter for WAN, and connect PC to LAN.
 
-4. Init device:
-    ./target_00_device_init.sh
+3. Launch Pi by TF card without WAN connecting.
 
-5. Enable ssl for opkg:
-    ./target_01_enable_ssl_for_opkg.sh
-    reboot
+4. scp piInit_23.05 to Pi.
 
-6. Set time to today
+5. ssh into Pi, and configure the pi step by step with scripts in piInit_23 directory.
+   But the step 08 and 09 are optional.
 
-7. Connect network cable to LAN.
+6. Login to Pi, upload config for OpenClash and switch to the config file in the tab of "Plugin Settings".
 
-8. Install basic packages:
-    ./target_02_install_basic_packages.sh
-    reboot
+7. Connect network cable to WAN, and download Clash in the "Version Update" sub-tab of "Plugin Settings".
 
-9. Install dnscrypt-proxy:
-    ./target_03_install_dnscrypt_proxy.sh
-    reboot
-
-10. Plug usb network adapter for working as WAN.
-
-11. Config usb network adapter as WAN, and native eth0 as LAN:
-    ./target_05_reconfig_wan_lan_for_rounter.sh
-    reboot
-
-12. Install SS:
-    ./target_04_ss.sh
-    reboot
- 
-13. Reconfig server IP, port, and password from LuCi.
-
+8. Select the server in the OpenClash "Overview" tab
 
